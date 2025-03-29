@@ -9,7 +9,7 @@ Here, the technologies and structures used for the backend are described.
 ### Installation
 
 ```bash
-git clone <repository-url>
+git clone <[https://github.com/Turing-Activities-by-Pareto/pareto-back.git]>
 cd backend
 npm install  # or pip install -r requirements.txt
 ```
