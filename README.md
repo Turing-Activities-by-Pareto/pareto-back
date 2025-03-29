@@ -1,37 +1,31 @@
 # Backend Repository
 
-Bu repository backend kodlarını ehtiva edir.
+This repository contains the backend codes.
 
 ## Backend
 
-Burada backend üçün istifadə edilən texnologiyalar və strukturlar qeyd edilə bilər.
+Here, the technologies and structures used for the backend are described.
 
-### Quraşdırma
+### Installation
 
 ```bash
 git clone <repository-url>
 cd backend
-npm install  # və ya pip install -r requirements.txt
+npm install  # or pip install -r requirements.txt
 ```
 
-### İşə Salma
+### Running the Server
 
 ```bash
-npm start  # və ya python app.py
+npm start  # or python app.py
 ```
 
-### API Endpointlər
+### API Endpoints
 
-| Metod  | URL            | Açıklama             |
-|--------|--------------|----------------------|
-| GET    | /activities      | Serverin statusunu yoxlayır |
+| Method | URL         | Description               |
+|--------|------------|---------------------------|
+| GET    | /activities | Checks the server status |
 
-### Texnologiyalar
-- Node.js / Express və ya Python / Flask
-- PostgreSQL / MongoDB
-- Redis
-- Docker
 
-### Əlaqə
-Hər hansı bir sualınız varsa, zəhmət olmasa, bizimlə əlaqə saxlayın.
-
+### Contact
+If you have any questions, please feel free to contact us.
