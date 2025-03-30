@@ -1,37 +1,42 @@
 package com.pareto.activities.entity;
 
-import com.pareto.activities.enums.EParticipantCategory;
-import jakarta.persistence.CascadeType;
+import com.pareto.activities.enums.ERequestStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "_user")
-public class UserEntity {
+@Data
+@Table(name = "event_request")
+public class EventRequestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String username;
-    private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "_user_id", nullable = false, updatable = false)
+    private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "event_id", nullable = false, updatable = false)
+    private EventEntity event;
 
     @Enumerated(EnumType.STRING)
-    private EParticipantCategory role;
+    private ERequestStatus status;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<EventRequestEntity> eventRequests;
+    private LocalDateTime requestDate;
 }

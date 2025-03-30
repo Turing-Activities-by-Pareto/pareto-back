@@ -6,14 +6,9 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum EEventCategory {
-    STUDENT("tələbə"),
-    TEACHER("müəllim"),
-    MENTOR("mentor"),
-    COMMUNITY_STAFF("community əməkdaşları"),
-    GUEST("qonaq"),
+    EDUCATION,
+    ENTERTAINMENT,
+    INTELLECTUAL,
 
     ;
-
-    private final String translation;
-
 }
