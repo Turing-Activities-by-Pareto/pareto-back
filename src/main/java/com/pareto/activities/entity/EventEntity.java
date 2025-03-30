@@ -14,10 +14,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,21 +32,25 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "event")
+@Builder
 public class EventEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     private String title;
     private String description;
 
-    private String photoUrl;
+    private String minioBucket;
+    private String objectName;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "category")
     private EventCategoryEntity category;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "sub_category")
     private SubEventCategoryEntity subCategory;
 
     private String place;
@@ -52,7 +59,7 @@ public class EventEntity {
     @Enumerated(EnumType.STRING)  // Store enum as string in DB
     @CollectionTable(name = "event_allowed_categories",
             joinColumns = @JoinColumn(name = "event_id"))
-    @Column(name = "category")
+    @Column(name = "participant_category")
     private List<EParticipantCategory> participantCategories;
 
     private LocalDateTime deadline;
@@ -64,4 +71,8 @@ public class EventEntity {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
     private List<EventRequestEntity> requests;
+
+    @OneToOne
+    @MapsId
+    private FileEntity file;
 }

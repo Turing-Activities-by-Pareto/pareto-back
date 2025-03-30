@@ -8,6 +8,7 @@ services:
     container_name: experiments_minio
     ports:
       - '9001:9001'
+      - '9000:9000'
     environment:
       - MINIO_ACCESS_KEY=minioadmin
       - MINIO_SECRET_KEY=minioadmin

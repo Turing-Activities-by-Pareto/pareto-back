@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
@@ -29,10 +30,12 @@ public class EventRequestEntity {
 
     @ManyToOne
     @JoinColumn(name = "_user_id", nullable = false, updatable = false)
+    @ToString.Exclude
     private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false, updatable = false)
+    @ToString.Exclude
     private EventEntity event;
 
     @Enumerated(EnumType.STRING)
