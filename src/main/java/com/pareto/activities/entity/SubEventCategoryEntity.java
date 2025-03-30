@@ -1,37 +1,36 @@
 package com.pareto.activities.entity;
 
-import com.pareto.activities.enums.EParticipantCategory;
-import jakarta.persistence.CascadeType;
+import com.pareto.activities.enums.EEventSubCategory;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "_user")
-public class UserEntity {
+@Table(name = "sub_event_category")
+public class SubEventCategoryEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String username;
-    private String password;
 
     @Enumerated(EnumType.STRING)
-    private EParticipantCategory role;
+    private EEventSubCategory name;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<EventRequestEntity> eventRequests;
+    private String photoUrl;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private EventCategoryEntity category;
 }
