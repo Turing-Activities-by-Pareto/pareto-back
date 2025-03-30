@@ -1,4 +1,7 @@
 spring:
+  sql:
+    init:
+      mode: always
   application:
     name: activities
   datasource:
@@ -14,10 +17,12 @@ spring:
 
 minio:
   url: http://localhost:9000
+  presignedUrlExpiry: 5
   access:
     name: "minioadmin"
     secret: "minioadmin"
   bucket:
-    name: "audio-files"
+    name:
+      event-background: event-background
     chunkSize: 10485760
 

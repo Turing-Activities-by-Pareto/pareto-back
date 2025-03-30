@@ -1,0 +1,31 @@
+-- Insert Event Categories
+INSERT INTO event_category (id, name, minio_bucket, object_name)
+VALUES (1, 'EDUCATION', NULL, NULL),
+       (2, 'ENTERTAINMENT', NULL, NULL),
+       (3, 'INTELLECTUAL', NULL, NULL);
+
+-- Insert Sub Event Categories
+INSERT INTO sub_event_category (name, minio_bucket, object_name, category_id)
+VALUES
+-- Education
+('HACKATHON', NULL, NULL, 1),
+('TECH_TALK', NULL, NULL, 1),
+('WORKSHOP', NULL, NULL, 1),
+('OTHER', NULL, NULL, 1),
+
+-- Entertainment
+('FOOTBALL', NULL, NULL, 2),
+('VOLLEYBALL', NULL, NULL, 2),
+('BOWLING', NULL, NULL, 2),
+('TRIPS', NULL, NULL, 2),
+('MAFIA', NULL, NULL, 2),
+('BOARD_GAMES', NULL, NULL, 2),
+('PICNIC', NULL, NULL, 2),
+('OTHER', NULL, NULL, 2),
+
+-- Intellectual
+('CHESS', NULL, NULL, 3),
+('NHN', NULL, NULL, 3),
+('KHAMSA', NULL, NULL, 3),
+('KUDOS', NULL, NULL, 3),
+('OTHER', NULL, NULL, 3);

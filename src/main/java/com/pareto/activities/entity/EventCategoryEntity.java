@@ -1,6 +1,5 @@
 package com.pareto.activities.entity;
 
-import com.pareto.activities.enums.EEventCategory;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +12,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -27,11 +27,15 @@ public class EventCategoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Enumerated(EnumType.STRING)
-    private EEventCategory name;
+    private String name;
 
-    private String photoUrl;
+    private String minioBucket;
+    private String objectName;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @ToString.Exclude
     private List<SubEventCategoryEntity> subCategories;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<EventEntity> events;
 }
