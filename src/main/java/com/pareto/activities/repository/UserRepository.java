@@ -1,6 +1,6 @@
-package com.pareto.activities.domain.repository;
+package com.pareto.activities.repository;
 
-import com.pareto.activities.domain.entity.UserEntity;
+import com.pareto.activities.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

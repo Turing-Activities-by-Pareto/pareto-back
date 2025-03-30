@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: activities
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/activities
+    username: user
+    password: 12345678
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+minio:
+  url: http://localhost:9000
+  access:
+    name: "minioadmin"
+    secret: "minioadmin"
+  bucket:
+    name: "audio-files"
+    chunkSize: 10485760
+
