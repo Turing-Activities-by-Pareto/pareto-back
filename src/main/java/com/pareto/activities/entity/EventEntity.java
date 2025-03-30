@@ -42,9 +42,6 @@ public class EventEntity {
     private String title;
     private String description;
 
-    private String minioBucket;
-    private String objectName;
-
     @ManyToOne
     @JoinColumn(name = "category")
     private EventCategoryEntity category;

@@ -3,6 +3,7 @@ package com.pareto.activities.mapper;
 import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventGetResponse;
 import com.pareto.activities.DTO.EventRequest;
+import com.pareto.activities.DTO.EventsGetResponse;
 import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.enums.EParticipantCategory;
 import org.mapstruct.Mapper;
@@ -26,4 +27,8 @@ public interface EventMapper {
     @Mapping(target = "category", ignore = true)
     @Mapping(target = "subCategory", ignore = true)
     EventGetResponse toEventGetResponse(EventEntity eventEntity);
+
+    @Mapping(target = "category", ignore = true)
+    @Mapping(target = "subCategory", ignore = true)
+    EventsGetResponse toEventsGetResponse(EventEntity eventEntity);
 }

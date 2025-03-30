@@ -8,12 +8,11 @@ import java.util.List;
 
 @Builder
 @Data
-public class EventGetResponse {
-    public String title;
-    public String description;
-    public String place;
-    private String imageGetUrl;
+public class EventsGetResponse {
+    private String title;
+    private String description;
+    private String place;
     private List<EParticipantCategory> participantCategories;
-    public String category;
-    public String subCategory;
+    private String category;
+    private String subCategory;
 }

@@ -3,22 +3,20 @@ package com.pareto.activities.service;
 import com.pareto.activities.DTO.EventGetResponse;
 import com.pareto.activities.DTO.EventRequest;
 import com.pareto.activities.DTO.EventCreateResponse;
-import com.pareto.activities.config.MinioConfig;
+import com.pareto.activities.DTO.EventsGetResponse;
 import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.entity.FileEntity;
 import com.pareto.activities.mapper.EventMapper;
 import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.SubEventCategoryRepository;
-import io.minio.GetPresignedObjectUrlArgs;
-import io.minio.MinioClient;
 import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,14 +46,16 @@ public class EventService {
 
         eventEntity.setFile(fileEntityDB);
         EventEntity eventEntityDB = eventRepository.save(eventEntity);
+        String objectName = fileEntityDB.getId() + "." + event.getFileExtension();
 
         String presignedUrl = storageService.getObjectUrl(
                 "event-background",
-                String.valueOf(fileEntityDB.getId()) + "." + event.getFileExtension()
+                objectName,
+                Method.PUT
         );
 
         fileEntityDB.setBucket("event-background");
-        fileEntityDB.setObject(String.valueOf(fileEntityDB.getId()));
+        fileEntityDB.setObject(objectName);
 
         fileRepository.save(fileEntityDB);
 
@@ -79,5 +79,31 @@ public class EventService {
          eventRepository.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("not found"))
          );
+    }
+
+    public List<EventsGetResponse> getEvents() {
+        return eventRepository.findAll().stream()
+                .map(eventMapper::toEventsGetResponse).toList();
+    }
+
+    public String getObjectGetUrl(Long eventId) {
+        return getObjectUrlbyMethod(eventId, Method.GET);
+    }
+
+    public String getObjectPutUrl(Long eventId) {
+        return getObjectUrlbyMethod(eventId, Method.PUT);
+    }
+
+    private String getObjectUrlbyMethod(
+            Long eventId,
+            Method method
+    ) {
+        FileEntity fileEntity = eventRepository.findById(eventId)
+                .orElseThrow(() -> new RuntimeException("not found")).getFile();
+
+        String objectName = fileEntity.getObject();
+        String bucket = fileEntity.getBucket();
+
+        return storageService.getObjectUrl(bucket, objectName, method);
     }
 }
