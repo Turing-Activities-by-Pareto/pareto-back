@@ -18,11 +18,10 @@ spring:
 minio:
   url: http://localhost:9000
   presignedUrlExpiry: 5
+  default-buckets: event-background, category-icon, sub-category-icon
   access:
     name: "minioadmin"
     secret: "minioadmin"
-  bucket:
-    name:
-      event-background: event-background
     chunkSize: 10485760
+
 

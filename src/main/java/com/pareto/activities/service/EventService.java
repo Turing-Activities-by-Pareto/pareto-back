@@ -27,11 +27,10 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-    private final MinioClient minioClient;
-    private final MinioConfig minioConfig;
     private final FileRepository fileRepository;
     private final EventCategoryRepository eventCategoryRepository;
     private final SubEventCategoryRepository subEventCategoryRepository;
+    private final StorageService storageService;
 
     public EventCreateResponse createEvent(EventRequest event) {
 
@@ -50,21 +49,12 @@ public class EventService {
         eventEntity.setFile(fileEntityDB);
         EventEntity eventEntityDB = eventRepository.save(eventEntity);
 
-        String presignedUrl = null;
+        String presignedUrl = storageService.getObjectUrl(
+                "event-background",
+                String.valueOf(fileEntityDB.getId()) + "." + event.getFileExtension()
+        );
 
-        try {
-            presignedUrl = minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
-                            .method(Method.PUT)
-                            .bucket(minioConfig.getEventBackgroundBucket())
-                            .object(String.valueOf(fileEntityDB.getId()))
-                            .expiry(minioConfig.getPresignedUrlExpiry(), TimeUnit.MINUTES)
-                            .build());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        fileEntityDB.setBucket(minioConfig.getEventBackgroundBucket());
+        fileEntityDB.setBucket("event-background");
         fileEntityDB.setObject(String.valueOf(fileEntityDB.getId()));
 
         fileRepository.save(fileEntityDB);

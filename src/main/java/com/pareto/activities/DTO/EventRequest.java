@@ -20,4 +20,5 @@ public class EventRequest {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private EConfirmStatus confirmStatus;
+    private String fileExtension;
 }
