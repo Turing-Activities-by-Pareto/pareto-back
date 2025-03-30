@@ -16,11 +16,11 @@ public class StorageService {
     private final MinioClient minioClient;
     private final MinioConfig minioConfig;
 
-    public String getObjectUrl(String bucket, String objectName) {
+    public String getObjectUrl(String bucket, String objectName, Method method) {
         try {
             return  minioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
-                            .method(Method.PUT)
+                            .method(method)
                             .bucket(bucket)
                             .object(objectName)
                             .expiry(minioConfig.getPresignedUrlExpiry(), TimeUnit.MINUTES)
