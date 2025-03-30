@@ -1,5 +1,6 @@
-package com.pareto.activities.domain.entity;
+package com.pareto.activities.entity;
 
+import com.pareto.activities.enums.EParticipantCategory;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

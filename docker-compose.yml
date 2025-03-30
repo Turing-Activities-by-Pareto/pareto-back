@@ -1,0 +1,39 @@
+volumes:
+  minio_activities:
+  activities_pdata:
+
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: experiments_minio
+    ports:
+      - '9001:9001'
+    environment:
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - CONSOLE_ACCESS_KEY=test
+      - CONSOLE_SECRET_KEY=test
+    command: server --address ":9000" --console-address ":9001" /data
+    volumes:
+      - minio_activities:/data
+
+  postgres-compose:
+    image: postgres
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=12345678
+      - POSTGRES_DB=activities
+    ports:
+      - "5432:5432"
+    volumes:
+      - activities_pdata:/var/lib/postgresql/data
+
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "test@test.com"
+      PGADMIN_DEFAULT_PASSWORD: "PgAdmin123"
+    ports:
+      - "16543:80"
+    depends_on:
+      - postgres-compose
