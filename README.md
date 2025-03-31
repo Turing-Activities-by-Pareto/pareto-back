@@ -11,21 +11,29 @@ Here, the technologies and structures used for the backend are described.
 ```bash
 git clone https://github.com/Turing-Activities-by-Pareto/pareto-back.git
 cd backend
-npm install  # or pip install -r requirements.txt
 ```
 
-### Running the Server
+### Push the newest app to the Docker Hub
 
 ```bash
-npm start  # or python app.py
+DOCKER_PASSWORD=PASSWORD DOCKER_USERNAME=mr3iscuit ./gradlew clean build jib 
+```
+
+### Running the Backend in local environment
+
+```bash
+docker compose up
+```
+
+### Stop all of the services
+
+```bash
+docker compose down
 ```
 
 ### API Endpoints
 
-| Method | URL         | Description               |
-|--------|------------|---------------------------|
-| GET    | /activities | Checks the server status |
-
-
-### Contact
-If you have any questions, please feel free to contact us.
+#### Default Swagger URL
+```bash
+http://localhost:8080/swagger-ui/index.html
+```
