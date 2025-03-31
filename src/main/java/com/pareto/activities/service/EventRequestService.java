@@ -44,21 +44,6 @@ public class EventRequestService {
                 .toList();
     }
 
-    @Transactional
-    public EvReqResponse setStatus(
-            Long requestId,
-            ERequestStatus status
-    ) {
-        EventRequestEntity event = eventRequestRepository.findById(requestId)
-                .orElseThrow(() -> new BusinessException(
-                        BusinessStatus.EVENTREQUEST_NOT_FOUND,
-                        HttpStatus.NOT_FOUND
-                ));
-
-        event.setStatus(status);
-
-        return eventRequestMapper.toEvReqResponse(event);
-    }
 
     public EvReqResponse requestParticipation(
             Long eventId,
@@ -86,5 +71,35 @@ public class EventRequestService {
         return eventRequestMapper.toEvReqResponse(
                 eventRequestRepository.save(eventRequestEntity)
         );
+    }
+
+    @Transactional
+    public EvReqResponse decline (
+            Long requestId
+    ) {
+        EventRequestEntity event = eventRequestRepository.findById(requestId)
+                .orElseThrow(() -> new BusinessException(
+                        BusinessStatus.EVENTREQUEST_NOT_FOUND,
+                        HttpStatus.NOT_FOUND
+                ));
+
+        event.setStatus(ERequestStatus.DECLINED);
+
+        return eventRequestMapper.toEvReqResponse(event);
+    }
+
+    @Transactional
+    public EvReqResponse approve (
+            Long requestId
+    ) {
+        EventRequestEntity event = eventRequestRepository.findById(requestId)
+                .orElseThrow(() -> new BusinessException(
+                        BusinessStatus.EVENTREQUEST_NOT_FOUND,
+                        HttpStatus.NOT_FOUND
+                ));
+
+        event.setStatus(ERequestStatus.APPROVED);
+
+        return eventRequestMapper.toEvReqResponse(event);
     }
 }
