@@ -38,3 +38,21 @@ services:
       - "16543:80"
     depends_on:
       - postgres-compose
+
+  java-app:
+    image: mr3iscuit/activities:latest
+    container_name: activities_backend
+    ports:
+        - "8080:8080"
+    depends_on:
+        - postgres-compose
+        - minio
+    pull_policy: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-compose:5432/activities
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=12345678
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+
