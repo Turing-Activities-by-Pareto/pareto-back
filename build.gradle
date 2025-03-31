@@ -58,7 +58,7 @@ jib {
     }
     to {
         image = "docker.io/mr3iscuit/${rootProject.name}:latest"
-        tags = ['latest', '0.0.1', timestamp]
+        tags = ['latest', '0.0.1', timestamp, System.getenv("GITHUB_RUN_NUMBER") ?: "notset"]
         auth {
             username = System.getenv("DOCKER_USERNAME") ?: "your-dockerhub-username"
             password = System.getenv("DOCKER_PASSWORD") ?: "your-dockerhub-password"
