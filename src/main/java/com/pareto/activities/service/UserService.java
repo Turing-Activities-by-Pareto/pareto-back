@@ -57,7 +57,8 @@ public class UserService {
 
         return userMapper.toUserResponse(user);
     }
-
+  
+    @Transactional
     public UserResponse updateUser(
             String username,
             UserCreateRequest user
@@ -76,6 +77,8 @@ public class UserService {
         return userMapper.toUserResponse(updatedUserEntity);
     }
 
+
+    @Transactional
     public void deleteUser(String username) {
 
             UserEntity user = userRepository.findByUsername(username)
