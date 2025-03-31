@@ -57,7 +57,7 @@ public class UserService {
 
         return userMapper.toUserResponse(user);
     }
-  
+
     @Transactional
     public UserResponse updateUser(
             String username,
@@ -81,11 +81,11 @@ public class UserService {
     @Transactional
     public void deleteUser(String username) {
 
-            UserEntity user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new BusinessException(BusinessStatus.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new BusinessException(BusinessStatus.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
 
-            userRepository.delete(user);
+        userRepository.delete(user);
 
-            log.info("User deleted: {}", user);
+        log.info("User deleted: {}", user);
     }
 }

@@ -13,8 +13,10 @@ import java.util.List;
 public interface UserMapper {
 
     UserResponse toUserResponse(UserEntity userEntity);
+
     List<UserResponse> toUserResponseList(List<UserEntity> userEntities);
 
     UserCreateRequest toUserCreateRequest(UserEntity userEntity);
+
     UserEntity toUserEntity(UserCreateRequest userCreateRequest);
 }

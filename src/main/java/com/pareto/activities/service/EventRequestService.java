@@ -74,7 +74,7 @@ public class EventRequestService {
     }
 
     @Transactional
-    public EvReqResponse decline (
+    public EvReqResponse decline(
             Long requestId
     ) {
         EventRequestEntity event = eventRequestRepository.findById(requestId)
@@ -89,7 +89,7 @@ public class EventRequestService {
     }
 
     @Transactional
-    public EvReqResponse approve (
+    public EvReqResponse approve(
             Long requestId
     ) {
         EventRequestEntity event = eventRequestRepository.findById(requestId)

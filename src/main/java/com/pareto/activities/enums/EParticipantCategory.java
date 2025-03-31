@@ -12,5 +12,4 @@ public enum EParticipantCategory {
     COMMUNITY_STAFF,
     GUEST,
 
-    ;
 }
