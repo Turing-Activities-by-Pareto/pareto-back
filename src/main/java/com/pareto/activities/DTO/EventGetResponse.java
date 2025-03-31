@@ -9,11 +9,12 @@ import java.util.List;
 @Builder
 @Data
 public class EventGetResponse {
-    public String title;
-    public String description;
-    public String place;
-    public String category;
-    public String subCategory;
+    private Long id;
+    private String title;
+    private String description;
+    private String place;
+    private String category;
+    private String subCategory;
     private String imageGetUrl;
     private List<EParticipantCategory> participantCategories;
 }
