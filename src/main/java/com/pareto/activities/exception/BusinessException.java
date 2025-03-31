@@ -6,14 +6,20 @@ import org.springframework.http.HttpStatus;
 public class BusinessException extends GeneralException {
 
     public BusinessException(BusinessStatus businessExceptionCodes) {
-        super(businessExceptionCodes, HttpStatus.NOT_FOUND);
+        super(
+                businessExceptionCodes,
+                HttpStatus.NOT_FOUND
+        );
     }
 
     public BusinessException(
             BusinessStatus businessExceptionCodes,
             HttpStatus httpStatus
     ) {
-        super(businessExceptionCodes, httpStatus);
+        super(
+                businessExceptionCodes,
+                httpStatus
+        );
     }
 
     public BusinessException(
@@ -21,7 +27,11 @@ public class BusinessException extends GeneralException {
             BusinessStatus businessExceptionCodes,
             HttpStatus httpStatus
     ) {
-        super(message, businessExceptionCodes, httpStatus);
+        super(
+                message,
+                businessExceptionCodes,
+                httpStatus
+        );
     }
 
     public BusinessException(
@@ -29,6 +39,10 @@ public class BusinessException extends GeneralException {
             BusinessStatus businessExceptionCodes,
             HttpStatus httpStatus
     ) {
-        super(cause, businessExceptionCodes, httpStatus);
+        super(
+                cause,
+                businessExceptionCodes,
+                httpStatus
+        );
     }
 }

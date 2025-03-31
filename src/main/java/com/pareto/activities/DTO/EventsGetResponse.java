@@ -9,6 +9,7 @@ import java.util.List;
 @Builder
 @Data
 public class EventsGetResponse {
+    private Long id;
     private String title;
     private String description;
     private String place;
