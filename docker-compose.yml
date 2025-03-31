@@ -49,6 +49,7 @@ services:
         - minio
     pull_policy: always
     environment:
+      - SPRING_PROFILES_ACTIVE=compose
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-compose:5432/activities
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=12345678

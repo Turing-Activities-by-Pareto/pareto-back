@@ -9,4 +9,5 @@ import lombok.Data;
 public class EvReqResponse {
     private Long eventId;
     private ERequestStatus status;
+    private Long userId;
 }
