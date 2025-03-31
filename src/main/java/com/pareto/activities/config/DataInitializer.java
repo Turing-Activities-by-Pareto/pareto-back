@@ -14,8 +14,10 @@ import java.util.List;
 public class DataInitializer {
 
     @Bean
-    public CommandLineRunner loadData(EventCategoryRepository eventCategoryRepository,
-                                      SubEventCategoryRepository subEventCategoryRepository) {
+    public CommandLineRunner loadData(
+            EventCategoryRepository eventCategoryRepository,
+            SubEventCategoryRepository subEventCategoryRepository
+    ) {
         return args -> {
             if (eventCategoryRepository.count() == 0) { // Prevent duplicate inserts
 

@@ -23,5 +23,3 @@ minio:
     name: "minioadmin"
     secret: "minioadmin"
     chunkSize: 10485760
-
-

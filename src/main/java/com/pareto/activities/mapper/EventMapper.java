@@ -5,13 +5,10 @@ import com.pareto.activities.DTO.EventGetResponse;
 import com.pareto.activities.DTO.EventRequest;
 import com.pareto.activities.DTO.EventsGetResponse;
 import com.pareto.activities.entity.EventEntity;
-import com.pareto.activities.enums.EParticipantCategory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
-import org.mapstruct.NullValueMappingStrategy;
 
-import java.util.List;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface EventMapper {
