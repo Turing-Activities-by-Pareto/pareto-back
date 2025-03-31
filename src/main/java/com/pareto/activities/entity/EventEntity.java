@@ -53,7 +53,8 @@ public class EventEntity {
     private String place;
 
     @ElementCollection(targetClass = EParticipantCategory.class, fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)  // Store enum as string in DB
+    @Enumerated(EnumType.STRING)
+    // Store enum as string in DB
     @CollectionTable(name = "event_allowed_categories",
             joinColumns = @JoinColumn(name = "event_id"))
     @Column(name = "participant_category")

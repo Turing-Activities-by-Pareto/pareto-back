@@ -25,11 +25,13 @@ public class CategoryService {
 
         List<EventCategoryEntity> all = eventCategoryRepository.findAll();
 
-        for(EventCategoryEntity category : all) {
+        for (EventCategoryEntity category : all) {
             categories.put(
                     category.getName(),
-                    subEventCategoryRepository.findByCategory(category).stream()
-                            .map(SubEventCategoryEntity::getName).collect(Collectors.toList())
+                    subEventCategoryRepository.findByCategory(category)
+                            .stream()
+                            .map(SubEventCategoryEntity::getName)
+                            .collect(Collectors.toList())
             );
         }
 

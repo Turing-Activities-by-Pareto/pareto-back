@@ -1,11 +1,13 @@
 package com.pareto.activities.service;
 
+import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventGetResponse;
 import com.pareto.activities.DTO.EventRequest;
-import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventsGetResponse;
 import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.entity.FileEntity;
+import com.pareto.activities.enums.BusinessStatus;
+import com.pareto.activities.exception.BusinessException;
 import com.pareto.activities.mapper.EventMapper;
 import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
@@ -14,6 +16,7 @@ import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +31,7 @@ public class EventService {
     private final FileRepository fileRepository;
     private final EventCategoryRepository eventCategoryRepository;
     private final SubEventCategoryRepository subEventCategoryRepository;
-    private final StorageService storageService;
+    private final IStorageService minioStorageService;
 
     public EventCreateResponse createEvent(EventRequest event) {
 
@@ -48,7 +51,7 @@ public class EventService {
         EventEntity eventEntityDB = eventRepository.save(eventEntity);
         String objectName = fileEntityDB.getId() + "." + event.getFileExtension();
 
-        String presignedUrl = storageService.getObjectUrl(
+        String presignedUrl = minioStorageService.getObjectUrl(
                 "event-background",
                 objectName,
                 Method.PUT
@@ -62,10 +65,12 @@ public class EventService {
         EventCreateResponse response = eventMapper.toEventCreateResponse(eventEntityDB);
 
         response.setCategory(
-                eventEntityDB.getCategory().getName()
+                eventEntityDB.getCategory()
+                        .getName()
         );
         response.setSubCategory(
-                eventEntityDB.getSubCategory().getName()
+                eventEntityDB.getSubCategory()
+                        .getName()
         );
 
         response.setImageUploadUrl(presignedUrl);
@@ -76,14 +81,16 @@ public class EventService {
     @Transactional
     public EventGetResponse getEventById(Long eventId) {
         return eventMapper.toEventGetResponse(
-         eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("not found"))
-         );
+                eventRepository.findById(eventId)
+                        .orElseThrow(() -> new BusinessException(BusinessStatus.EVENT_NOT_FOUND, HttpStatus.NOT_FOUND))
+        );
     }
 
     public List<EventsGetResponse> getEvents() {
-        return eventRepository.findAll().stream()
-                .map(eventMapper::toEventsGetResponse).toList();
+        return eventRepository.findAll()
+                .stream()
+                .map(eventMapper::toEventsGetResponse)
+                .toList();
     }
 
     public String getObjectGetUrl(Long eventId) {
@@ -99,11 +106,13 @@ public class EventService {
             Method method
     ) {
         FileEntity fileEntity = eventRepository.findById(eventId)
-                .orElseThrow(() -> new RuntimeException("not found")).getFile();
+                .orElseThrow(() -> new BusinessException(BusinessStatus.EVENT_NOT_FOUND, HttpStatus.NOT_FOUND))
+                .getFile()
+                ;
 
         String objectName = fileEntity.getObject();
         String bucket = fileEntity.getBucket();
 
-        return storageService.getObjectUrl(bucket, objectName, method);
+        return minioStorageService.getObjectUrl(bucket, objectName, method);
     }
 }

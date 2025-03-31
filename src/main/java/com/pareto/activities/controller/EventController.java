@@ -1,11 +1,10 @@
 package com.pareto.activities.controller;
 
+import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventGetResponse;
 import com.pareto.activities.DTO.EventRequest;
-import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventsGetResponse;
 import com.pareto.activities.service.EventService;
-import com.pareto.activities.service.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +27,7 @@ public class EventController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventCreateResponse createEvent(
-        @RequestBody EventRequest event
+            @RequestBody EventRequest event
     ) {
         return eventService.createEvent(event);
     }
@@ -64,5 +63,4 @@ public class EventController {
     ) {
         return eventService.getObjectPutUrl(eventId);
     }
-
 }

@@ -1,6 +1,5 @@
 package com.pareto.activities.DTO;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pareto.activities.enums.EConfirmStatus;
 import com.pareto.activities.enums.EParticipantCategory;
 import lombok.Data;
