@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface SubEventCategoryRepository extends JpaRepository<SubEventCategoryEntity, Long> {
+
     SubEventCategoryEntity findByName(String subCategory);
 
     List<SubEventCategoryEntity> findByCategory(EventCategoryEntity category);
