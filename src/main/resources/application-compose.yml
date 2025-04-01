@@ -31,11 +31,3 @@ minio:
     name: ${MINIO_ACCESS_KEY}
     secret: ${MINIO_SECRET_KEY}
     chunkSize: 10485760
-
-
-  hello-world:
-    name: ${HELLO_WORLD_NAME}
-    age: ${HELLO_WORLD_AGE}
-    address: ${HELLO_WORLD_ADDRESS}
-    hobbies: ${HELLO_WORLD_HOBBIES}
-    isActive: ${HELLO_WORLD_IS_ACTIVE}
