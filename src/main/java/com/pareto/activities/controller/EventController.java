@@ -72,6 +72,7 @@ public class EventController {
 
     @PostMapping("/{eventId}/request-participation")
     @ResponseStatus(HttpStatus.OK)
+    @HandleDuplication
     public EvReqResponse setStatus(
             @PathVariable Long eventId,
             @RequestHeader("X-UserID") Long userId

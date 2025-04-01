@@ -1,6 +1,7 @@
 package com.pareto.activities.controller;
 
 import com.pareto.activities.DTO.EvReqResponse;
+import com.pareto.activities.aspect.HandleDuplication;
 import com.pareto.activities.enums.ERequestStatus;
 import com.pareto.activities.service.EventRequestService;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,7 @@ public class EventRequestsController {
 
     @PostMapping("/approve/{requestId}")
     @ResponseStatus(HttpStatus.OK)
+    @HandleDuplication
     public EvReqResponse approve(
             @PathVariable Long requestId,
             @RequestBody ERequestStatus status
