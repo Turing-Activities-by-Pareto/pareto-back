@@ -24,12 +24,11 @@ public class DuplicationAspect {
 
     private final RedisRepository<String, Object> redisRepository;
 
-
     @Pointcut("@annotation(handleDuplication)")
     public void handleDuplicationPointcut(HandleDuplication handleDuplication) {
     }
 
-    @AfterReturning("handleDuplicationPointcut(handleDuplication)")
+    @AfterReturning(value = "handleDuplicationPointcut(handleDuplication)", argNames = "joinPoint,handleDuplication")
     public void checkForDuplicates(
             JoinPoint joinPoint,
             HandleDuplication handleDuplication
