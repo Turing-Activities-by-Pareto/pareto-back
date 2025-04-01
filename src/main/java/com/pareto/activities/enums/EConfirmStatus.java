@@ -7,5 +7,4 @@ public enum EConfirmStatus {
     ACTIVE,
     INACTIVE,
 
-    ;
 }

@@ -5,6 +5,7 @@ import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventGetResponse;
 import com.pareto.activities.DTO.EventRequest;
 import com.pareto.activities.DTO.EventsGetResponse;
+import com.pareto.activities.aspect.HandleDuplication;
 import com.pareto.activities.service.EventRequestService;
 import com.pareto.activities.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class EventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @HandleDuplication
     public EventCreateResponse createEvent(
             @RequestBody EventRequest event
     ) {

@@ -119,8 +119,12 @@ public enum BusinessStatus implements ExceptionKeyAndMessage {
             1024,
             HttpResponseConstants.ERROR,
             "Minio error"
+    ),
+    DUPLICATE_REQUEST(
+            1025,
+            HttpResponseConstants.ERROR,
+            "Duplicate request detected"
     );
-
 
     private final int code;
     private final String title;
