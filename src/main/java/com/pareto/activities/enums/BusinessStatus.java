@@ -123,12 +123,22 @@ public enum BusinessStatus implements ExceptionKeyAndMessage {
     DUPLICATE_REQUEST(
             1025,
             HttpResponseConstants.ERROR,
-            "Duplicate request detected"
+            "Duplicate request detected."
+    ),
+    EVENT_SUB_CATEGORY_NOT_FOUND(
+            1026,
+            HttpResponseConstants.ERROR,
+            "Event sub category not found."
+    ),
+    EVENT_CATEGORY_AND_SUB_CATEGORY_NOT_MATCHED(
+            1027,
+            HttpResponseConstants.ERROR,
+            "Event category and sub category not matched."
     ),
     EVENT_CATEGORY_NOT_FOUND(
-            1025,
+            1028,
             HttpResponseConstants.ERROR,
-            "Duplicate request detected"
+            "Event category not found"
     );
 
     private final int code;

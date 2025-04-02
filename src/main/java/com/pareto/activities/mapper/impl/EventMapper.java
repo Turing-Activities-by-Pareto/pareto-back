@@ -49,7 +49,7 @@ public class EventMapper implements IEventMapper {
                 .isEmpty()) {
             throw new BusinessException(
                     "Event sub category not found : " + request.getSubCategory(),
-                    BusinessStatus.DATA_NOT_FOUND,
+                    BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND,
                     HttpStatus.NOT_FOUND
             );
         }
@@ -69,7 +69,7 @@ public class EventMapper implements IEventMapper {
                             request.getSubCategory(),
                             request.getCategory()
                     ),
-                    BusinessStatus.DATA_NOT_FOUND,
+                    BusinessStatus.EVENT_CATEGORY_AND_SUB_CATEGORY_NOT_MATCHED,
                     HttpStatus.NOT_FOUND
             );
         }
@@ -78,7 +78,7 @@ public class EventMapper implements IEventMapper {
                                       .findByName(request.getSubCategory())
                                       .orElseThrow(() -> new BusinessException(
                                               "Event sub category not found : " + request.getSubCategory(),
-                                              BusinessStatus.DATA_NOT_FOUND,
+                                              BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND,
                                               HttpStatus.NOT_FOUND
                                       )));
 
