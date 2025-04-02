@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SubEventCategoryRepository extends JpaRepository<SubEventCategoryEntity, Long> {
 
-    SubEventCategoryEntity findByName(String subCategory);
+    Optional<SubEventCategoryEntity> findByName(String name);
 
     List<SubEventCategoryEntity> findByCategory(EventCategoryEntity category);
 }

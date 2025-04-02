@@ -8,7 +8,8 @@ import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.entity.FileEntity;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;
-import com.pareto.activities.mapper.EventMapper;
+import com.pareto.activities.mapper.IEventMapper;
+import com.pareto.activities.mapper.impl.EventMapper;
 import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.SubEventCategoryRepository;
@@ -37,13 +38,6 @@ public class EventService {
 
         EventEntity eventEntity = eventMapper.toEventEntity(event);
 
-        eventEntity.setCategory(
-                eventCategoryRepository.findByName(event.getCategory())
-        );
-        eventEntity.setSubCategory(
-                subEventCategoryRepository.findByName(event.getSubCategory())
-        );
-
         FileEntity fileEntity = new FileEntity();
         FileEntity fileEntityDB = fileRepository.save(fileEntity);
 
@@ -63,15 +57,6 @@ public class EventService {
         fileRepository.save(fileEntityDB);
 
         EventCreateResponse response = eventMapper.toEventCreateResponse(eventEntityDB);
-
-        response.setCategory(
-                eventEntityDB.getCategory()
-                        .getName()
-        );
-        response.setSubCategory(
-                eventEntityDB.getSubCategory()
-                        .getName()
-        );
 
         response.setImageUploadUrl(presignedUrl);
 
