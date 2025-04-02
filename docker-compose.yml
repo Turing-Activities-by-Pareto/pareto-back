@@ -31,16 +31,6 @@ services:
     volumes:
       - activities_pdata:/var/lib/postgresql/data
 
-  pgadmin-compose:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "test@test.com"
-      PGADMIN_DEFAULT_PASSWORD: "PgAdmin123"
-    ports:
-      - "16543:80"
-    depends_on:
-      - postgres-compose
-
   java-app:
     image: mr3iscuit/activities:latest
     container_name: activities_backend
