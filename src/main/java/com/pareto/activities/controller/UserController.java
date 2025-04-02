@@ -50,7 +50,10 @@ public class UserController {
             @PathVariable String username,
             @RequestBody UserCreateRequest user
     ) {
-        return userServise.updateUser(username, user);
+        return userServise.updateUser(
+                username,
+                user
+        );
     }
 
     @DeleteMapping("/{username}")

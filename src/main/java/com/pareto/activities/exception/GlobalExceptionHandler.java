@@ -52,7 +52,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             GeneralException ex,
             WebRequest request
     ) {
-        log.error("General Exception {}", ex.getMessage());
+        log.error(
+                "General Exception {}",
+                ex.getMessage()
+        );
         return ofType(
                 request,
                 ex.getHttpStatus(),
@@ -68,7 +71,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             RuntimeException ex,
             WebRequest request
     ) {
-        log.error("RuntimeException: {}", ex.getMessage());
+        log.error(
+                "RuntimeException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 request,
                 HttpStatus.BAD_REQUEST,
@@ -84,8 +90,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             AccessDeniedException ex,
             WebRequest request
     ) {
-        log.error("Access denied: {}", ex.getMessage());
-        return ofType(ex, request, TechExceptionCodes.ACCESS_DENIED, HttpStatus.BAD_REQUEST);
+        log.error(
+                "Access denied: {}",
+                ex.getMessage()
+        );
+        return ofType(
+                ex,
+                request,
+                TechExceptionCodes.ACCESS_DENIED,
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     @ExceptionHandler(ConnectException.class)
@@ -93,7 +107,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             ConnectException ex,
             WebRequest request
     ) {
-        log.error("Connect Exception: {}", ex.getMessage());
+        log.error(
+                "Connect Exception: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -107,7 +124,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             FeignClientResponseException ex,
             WebRequest request
     ) {
-        log.error("FeignClientResponseException: {}", ex.getMessage());
+        log.error(
+                "FeignClientResponseException: {}",
+                ex.getMessage()
+        );
         if ("2009".equals(ex.getCode()) || "2006".equals(ex.getCode())) {
             return ofType(
                     request,
@@ -136,7 +156,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             MethodArgumentTypeMismatchException ex,
             WebRequest request
     ) {
-        log.error("MethodArgumentTypeMismatchException: {}", ex.getMessage());
+        log.error(
+                "MethodArgumentTypeMismatchException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -150,7 +173,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             NoSuchElementException ex,
             WebRequest request
     ) {
-        log.error("NoSuchElementException: {}", ex.getMessage());
+        log.error(
+                "NoSuchElementException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -164,7 +190,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             KeyStoreException ex,
             WebRequest request
     ) {
-        log.error("KeyStoreException: {}", ex.getMessage());
+        log.error(
+                "KeyStoreException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -178,7 +207,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             SocketException ex,
             WebRequest request
     ) {
-        log.error("SocketException: {}", ex.getMessage());
+        log.error(
+                "SocketException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -192,7 +224,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             DateTimeParseException ex,
             WebRequest request
     ) {
-        log.error("DateTimeParseException: {}", ex.getMessage());
+        log.error(
+                "DateTimeParseException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -206,7 +241,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             InvalidFormatException ex,
             WebRequest request
     ) {
-        log.error("InvalidFormatException: {}", ex.getMessage());
+        log.error(
+                "InvalidFormatException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -220,7 +258,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             NoSuchBeanDefinitionException ex,
             WebRequest request
     ) {
-        log.error("NoSuchBeanDefinitionException: {}", ex.getMessage());
+        log.error(
+                "NoSuchBeanDefinitionException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -234,7 +275,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             NullPointerException ex,
             WebRequest request
     ) {
-        log.error("NullPointerException: {}", ex.getMessage());
+        log.error(
+                "NullPointerException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -248,7 +292,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             IllegalArgumentException ex,
             WebRequest request
     ) {
-        log.error("IllegalArgumentException: {}", ex.getMessage());
+        log.error(
+                "IllegalArgumentException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -262,7 +309,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             ConversionFailedException ex,
             WebRequest request
     ) {
-        log.error("ConversionFailedException: {}", ex.getMessage());
+        log.error(
+                "ConversionFailedException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -276,7 +326,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             UnexpectedTypeException ex,
             WebRequest request
     ) {
-        log.error("UnexpectedTypeException: {}", ex.getMessage());
+        log.error(
+                "UnexpectedTypeException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -290,7 +343,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             ArithmeticException ex,
             WebRequest request
     ) {
-        log.error("ArithmeticException: {}", ex.getMessage());
+        log.error(
+                "ArithmeticException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -304,7 +360,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             ClassCastException ex,
             WebRequest request
     ) {
-        log.error("ClassCastException: {}", ex.getMessage());
+        log.error(
+                "ClassCastException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 ex,
                 request,
@@ -319,17 +378,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request
     ) {
         Set<ConstraintViolation<?>> constraintViolations = ex.getConstraintViolations();
-        List<ValidationError> validationErrors = constraintViolations.stream()
-                .map(p -> ValidationError.builder()
-                        .field(p.getPropertyPath()
-                                .toString())
-                        .rejectedValue(Objects.requireNonNull(p.getInvalidValue())
-                                .toString())
+        List<ValidationError> validationErrors = constraintViolations
+                .stream()
+                .map(p -> ValidationError
+                        .builder()
+                        .field(p
+                                       .getPropertyPath()
+                                       .toString())
+                        .rejectedValue(Objects
+                                               .requireNonNull(p.getInvalidValue())
+                                               .toString())
                         .rejectedMessage(p.getMessage())
                         .build())
                 .collect(Collectors.toList())
                 ;
-        log.error("javax.validation.ConstraintViolationException: {}", ex.getMessage());
+        log.error(
+                "javax.validation.ConstraintViolationException: {}",
+                ex.getMessage()
+        );
         return ofType(
                 request,
                 HttpStatus.BAD_REQUEST,
@@ -395,26 +461,52 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             List<?> validationErrors
     ) {
         Map<String, Object> attributes = new HashMap<>();
-        attributes.put(HttpResponseConstants.CODE, code);
-        attributes.put(HttpResponseConstants.MESSAGE, businessMessage.replace("\\n", "\n"));
+        attributes.put(
+                HttpResponseConstants.CODE,
+                code
+        );
+        attributes.put(
+                HttpResponseConstants.MESSAGE,
+                businessMessage.replace(
+                        "\\n",
+                        "\n"
+                )
+        );
         if (Objects.nonNull(techMessage)) {
-            attributes.put(HttpResponseConstants.TECH_MESSAGE, techMessage);
+            attributes.put(
+                    HttpResponseConstants.TECH_MESSAGE,
+                    techMessage
+            );
         }
-        attributes.put(HttpResponseConstants.STATUS, status.value());
-        attributes.put(HttpResponseConstants.ERROR, status.getReasonPhrase());
+        attributes.put(
+                HttpResponseConstants.STATUS,
+                status.value()
+        );
+        attributes.put(
+                HttpResponseConstants.ERROR,
+                status.getReasonPhrase()
+        );
         if (!validationErrors.isEmpty()) {
-            attributes.put(HttpResponseConstants.VALIDATION_ERRORS, validationErrors);
+            attributes.put(
+                    HttpResponseConstants.VALIDATION_ERRORS,
+                    validationErrors
+            );
         }
         attributes.put(
                 HttpResponseConstants.TIMESTAMP,
-                LocalDateTime.now()
+                LocalDateTime
+                        .now()
                         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         );
         attributes.put(
                 HttpResponseConstants.PATH,
-                ((ServletWebRequest) request).getRequest()
+                ((ServletWebRequest) request)
+                        .getRequest()
                         .getRequestURI()
         );
-        return new ResponseEntity<>(attributes, status);
+        return new ResponseEntity<>(
+                attributes,
+                status
+        );
     }
 }

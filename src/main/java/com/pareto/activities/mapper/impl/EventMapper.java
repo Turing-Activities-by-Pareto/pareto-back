@@ -65,7 +65,10 @@ public class EventMapper implements IEventMapper {
                 )
         ) {
             throw new BusinessException(
-                    "sub category:%s and category:%s are not matched".formatted(request.getSubCategory(), request.getCategory()),
+                    "sub category:%s and category:%s are not matched".formatted(
+                            request.getSubCategory(),
+                            request.getCategory()
+                    ),
                     BusinessStatus.DATA_NOT_FOUND,
                     HttpStatus.NOT_FOUND
             );

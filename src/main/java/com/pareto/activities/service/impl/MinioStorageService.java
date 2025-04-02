@@ -27,15 +27,22 @@ public class MinioStorageService implements IStorageService {
     ) {
         try {
             return minioClient.getPresignedObjectUrl(
-                    GetPresignedObjectUrlArgs.builder()
+                    GetPresignedObjectUrlArgs
+                            .builder()
                             .method(method)
                             .bucket(bucket)
                             .object(objectName)
-                            .expiry(minioConfig.getPresignedUrlExpiry(), TimeUnit.MINUTES)
+                            .expiry(
+                                    minioConfig.getPresignedUrlExpiry(),
+                                    TimeUnit.MINUTES
+                            )
                             .build());
         } catch (
                 Exception e) {
-            throw new BusinessException(BusinessStatus.MINIO_ERROR, HttpStatus.NO_CONTENT);
+            throw new BusinessException(
+                    BusinessStatus.MINIO_ERROR,
+                    HttpStatus.NO_CONTENT
+            );
         }
     }
 }

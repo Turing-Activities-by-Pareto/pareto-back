@@ -27,7 +27,8 @@ public class EventRequestService {
 
     public EvReqResponse getEventRequestById(Long eventId) {
 
-        return eventRequestRepository.findById(eventId)
+        return eventRequestRepository
+                .findById(eventId)
                 .map(IEventRequestMapper::toEvReqResponse)
                 .orElseThrow(
                         () -> new BusinessException(
@@ -38,7 +39,8 @@ public class EventRequestService {
 
     public List<EvReqResponse> getEventRequests() {
 
-        return eventRequestRepository.findAll()
+        return eventRequestRepository
+                .findAll()
                 .stream()
                 .map(IEventRequestMapper::toEvReqResponse)
                 .toList();
@@ -49,20 +51,23 @@ public class EventRequestService {
             Long eventId,
             Long userId
     ) {
-        EventEntity event = eventRepository.findById(eventId)
+        EventEntity event = eventRepository
+                .findById(eventId)
                 .orElseThrow(() -> new BusinessException(
                         BusinessStatus.EVENT_NOT_FOUND,
                         HttpStatus.NOT_FOUND
                 ));
 
-        EventRequestEntity eventRequestEntity = EventRequestEntity.builder()
+        EventRequestEntity eventRequestEntity = EventRequestEntity
+                .builder()
                 .event(event)
                 .status(ERequestStatus.PENDING)
-                .user(userRepository.findById(userId)
-                        .orElseThrow(() -> new BusinessException(
-                                BusinessStatus.USER_NOT_FOUND,
-                                HttpStatus.NOT_FOUND
-                        )))
+                .user(userRepository
+                              .findById(userId)
+                              .orElseThrow(() -> new BusinessException(
+                                      BusinessStatus.USER_NOT_FOUND,
+                                      HttpStatus.NOT_FOUND
+                              )))
                 .build()
                 ;
 
@@ -77,7 +82,8 @@ public class EventRequestService {
     public EvReqResponse decline(
             Long requestId
     ) {
-        EventRequestEntity event = eventRequestRepository.findById(requestId)
+        EventRequestEntity event = eventRequestRepository
+                .findById(requestId)
                 .orElseThrow(() -> new BusinessException(
                         BusinessStatus.EVENTREQUEST_NOT_FOUND,
                         HttpStatus.NOT_FOUND
@@ -92,7 +98,8 @@ public class EventRequestService {
     public EvReqResponse approve(
             Long requestId
     ) {
-        EventRequestEntity event = eventRequestRepository.findById(requestId)
+        EventRequestEntity event = eventRequestRepository
+                .findById(requestId)
                 .orElseThrow(() -> new BusinessException(
                         BusinessStatus.EVENTREQUEST_NOT_FOUND,
                         HttpStatus.NOT_FOUND
