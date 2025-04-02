@@ -13,31 +13,11 @@ import org.mapstruct.NullValueCheckStrategy;
 import org.springframework.http.HttpStatus;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-public interface EventRequestMapper {
+public interface IEventRequestMapper {
 
     EventRequestRepository eventRequestRepository = null;
 
     @Mapping(target = "userId", ignore = true)
     EvReqResponse toEvReqResponse(EventRequestEntity eventRequestEntity);
 
-    @AfterMapping
-    default void setUserId(
-            @MappingTarget EvReqResponse evReqResponse,
-            EventRequestEntity eventRequestEntity
-    ) {
-        evReqResponse.setUserId(eventRequestEntity.getUser()
-                .getId());
-    }
-
-    @AfterMapping
-    default void setUserEntity(
-            EvReqResponse evReqResponse,
-            @MappingTarget EventRequestEntity eventRequestEntity
-    ) {
-        eventRequestEntity.setUser(
-                eventRequestRepository.findById(evReqResponse.getUserId())
-                        .orElseThrow(() -> new BusinessException(BusinessStatus.USER_NOT_FOUND, HttpStatus.NOT_FOUND))
-                        .getUser()
-        );
-    }
 }

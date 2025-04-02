@@ -6,7 +6,7 @@ import com.pareto.activities.entity.EventRequestEntity;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.enums.ERequestStatus;
 import com.pareto.activities.exception.BusinessException;
-import com.pareto.activities.mapper.EventRequestMapper;
+import com.pareto.activities.mapper.impl.EventRequestMapper;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.EventRequestRepository;
 import com.pareto.activities.repository.UserRepository;
@@ -21,14 +21,14 @@ import java.util.List;
 @Service
 public class EventRequestService {
     private final EventRequestRepository eventRequestRepository;
-    private final EventRequestMapper eventRequestMapper;
+    private final EventRequestMapper IEventRequestMapper;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
     public EvReqResponse getEventRequestById(Long eventId) {
 
         return eventRequestRepository.findById(eventId)
-                .map(eventRequestMapper::toEvReqResponse)
+                .map(IEventRequestMapper::toEvReqResponse)
                 .orElseThrow(
                         () -> new BusinessException(
                                 BusinessStatus.EVENTREQUEST_NOT_FOUND,
@@ -40,7 +40,7 @@ public class EventRequestService {
 
         return eventRequestRepository.findAll()
                 .stream()
-                .map(eventRequestMapper::toEvReqResponse)
+                .map(IEventRequestMapper::toEvReqResponse)
                 .toList();
     }
 
@@ -68,7 +68,7 @@ public class EventRequestService {
 
         eventRequestRepository.save(eventRequestEntity);
 
-        return eventRequestMapper.toEvReqResponse(
+        return IEventRequestMapper.toEvReqResponse(
                 eventRequestRepository.save(eventRequestEntity)
         );
     }
@@ -85,7 +85,7 @@ public class EventRequestService {
 
         event.setStatus(ERequestStatus.DECLINED);
 
-        return eventRequestMapper.toEvReqResponse(event);
+        return IEventRequestMapper.toEvReqResponse(event);
     }
 
     @Transactional
@@ -100,6 +100,6 @@ public class EventRequestService {
 
         event.setStatus(ERequestStatus.APPROVED);
 
-        return eventRequestMapper.toEvReqResponse(event);
+        return IEventRequestMapper.toEvReqResponse(event);
     }
 }
