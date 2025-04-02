@@ -20,7 +20,7 @@ public class CategoryService {
     private final EventCategoryRepository eventCategoryRepository;
     private final SubEventCategoryRepository subEventCategoryRepository;
 
-    public CategoryResponse getAllWithSubCategories() {
+    public Map<String, List<String>> getAllWithSubCategories() {
         Map<String, List<String>> categories = new HashMap<>();
 
         List<EventCategoryEntity> all = eventCategoryRepository.findAll();
@@ -36,9 +36,6 @@ public class CategoryService {
             );
         }
 
-        return CategoryResponse
-                .builder()
-                .categories(categories)
-                .build();
+        return categories;
     }
 }

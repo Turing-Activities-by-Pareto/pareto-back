@@ -35,7 +35,7 @@ services:
     image: mr3iscuit/activities:latest
     container_name: activities_backend
     ports:
-        - "9090:8080"
+        - "9090:9090"
     depends_on:
         - postgres-compose
         - minio
