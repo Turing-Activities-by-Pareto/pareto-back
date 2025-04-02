@@ -8,9 +8,7 @@ import com.pareto.activities.redis.RedisRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -44,7 +42,9 @@ public class DuplicationAspect {
     public void checkForDuplicates(
             ProceedingJoinPoint joinPoint,
             HandleDuplication handleDuplication
-    ) throws Throwable {
+    )
+            throws
+            Throwable {
 
         Method method = ((org.aspectj.lang.reflect.MethodSignature) joinPoint.getSignature()).getMethod();
         Object[] args = joinPoint.getArgs();
@@ -53,7 +53,10 @@ public class DuplicationAspect {
         Object dto = null;
 
         for (int i = 0; i < parameters.length; i++) {
-            if (AnnotationUtils.findAnnotation(parameters[i], RequestBody.class) != null) {
+            if (AnnotationUtils.findAnnotation(
+                    parameters[i],
+                    RequestBody.class
+            ) != null) {
                 dto = args[i];
                 break;
             }
@@ -63,10 +66,16 @@ public class DuplicationAspect {
                 ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
                         .getRequest();
 
-        String requestKey = generateRequestKey(request, dto);
+        String requestKey = generateRequestKey(
+                request,
+                dto
+        );
 
         if (isDuplicate(requestKey)) {
-            throw new BusinessException(BusinessStatus.DUPLICATE_REQUEST, HttpStatus.CONFLICT);
+            throw new BusinessException(
+                    BusinessStatus.DUPLICATE_REQUEST,
+                    HttpStatus.CONFLICT
+            );
         }
 
         joinPoint.proceed();
@@ -77,18 +86,25 @@ public class DuplicationAspect {
     private String generateRequestKey(
             HttpServletRequest request,
             Object dto
-    ) throws IOException {
+    )
+            throws
+            IOException {
 
         StringBuilder requestDetails = new StringBuilder();
 
         requestDetails.append(request.getMethod());
         requestDetails.append(request.getRequestURI());
         requestDetails.append(objectMapper.writeValueAsString(dto));
-        log.info("Cached key for request: {}", objectMapper.writeValueAsString(dto));
-        request.getParameterMap()
+        log.info(
+                "Cached key for request: {}",
+                objectMapper.writeValueAsString(dto)
+        );
+        request
+                .getParameterMap()
                 .forEach((key, value) -> {
                     for (String paramValue : value) {
-                        requestDetails.append(key)
+                        requestDetails
+                                .append(key)
                                 .append("=")
                                 .append(paramValue)
                         ;
@@ -99,18 +115,24 @@ public class DuplicationAspect {
         requestDetails.append(request.getHeader("Authorization"));
 
         return DigestUtils.md5DigestAsHex(
-                requestDetails.toString()
+                requestDetails
+                        .toString()
                         .getBytes()
         );
     }
 
     private boolean isDuplicate(String requestKey) {
-        return redisRepository.findByKey(requestKey)
+        return redisRepository
+                .findByKey(requestKey)
                 .isPresent();
     }
 
     private void cacheRequest(String requestKey) {
-        redisRepository.putByKey(requestKey, Constant.EMPTY_STRING, Duration.ofSeconds(40));
+        redisRepository.putByKey(
+                requestKey,
+                Constant.EMPTY_STRING,
+                Duration.ofSeconds(40)
+        );
     }
 }
 

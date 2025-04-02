@@ -58,20 +58,25 @@ public class RedisConfig {
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory connectionFactory) {
-        return RedisCacheManager.builder(connectionFactory)
+        return RedisCacheManager
+                .builder(connectionFactory)
                 .cacheDefaults(redisCacheConfiguration())
                 .build();
     }
 
     private RedisCacheConfiguration redisCacheConfiguration() {
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(
+                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+                false
+        );
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
         serializer.setObjectMapper(objectMapper);
 
-        return RedisCacheConfiguration.defaultCacheConfig()
+        return RedisCacheConfiguration
+                .defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(10)) // Cache expiration time
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));

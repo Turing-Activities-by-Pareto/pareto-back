@@ -15,8 +15,9 @@ public class RedisRepositoryImpl<K, V> implements RedisRepository<K, V> {
 
     @Override
     public Optional<V> findByKey(K key) {
-        return Optional.ofNullable(redisTemplate.opsForValue()
-                .get(key));
+        return Optional.ofNullable(redisTemplate
+                                           .opsForValue()
+                                           .get(key));
     }
 
     @Override
@@ -30,7 +31,12 @@ public class RedisRepositoryImpl<K, V> implements RedisRepository<K, V> {
             V data,
             Duration ttl
     ) {
-        redisTemplate.opsForValue()
-                .set(key, data, ttl);
+        redisTemplate
+                .opsForValue()
+                .set(
+                        key,
+                        data,
+                        ttl
+                );
     }
 }

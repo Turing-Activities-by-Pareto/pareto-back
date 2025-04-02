@@ -77,6 +77,9 @@ public class EventController {
             @PathVariable Long eventId,
             @RequestHeader("X-UserID") Long userId
     ) {
-        return eventRequestService.requestParticipation(eventId, userId);
+        return eventRequestService.requestParticipation(
+                eventId,
+                userId
+        );
     }
 }

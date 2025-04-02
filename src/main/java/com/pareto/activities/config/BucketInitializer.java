@@ -22,26 +22,38 @@ public class BucketInitializer {
     public void initializeBuckets() {
 
         String[] defaultBuckets = minioConfig.getDefaultBuckets();
-        Arrays.stream(defaultBuckets)
+        Arrays
+                .stream(defaultBuckets)
                 .forEach(System.out::println);
 
         try {
             for (String bucket : defaultBuckets) {
-                if (!minioClient.bucketExists(BucketExistsArgs.builder()
-                        .bucket(bucket)
-                        .build())) {
-                    minioClient.makeBucket(MakeBucketArgs.builder()
-                            .bucket(bucket)
-                            .build());
-                    log.info("Bucket '{}' created successfully.", bucket);
+                if (!minioClient.bucketExists(BucketExistsArgs
+                                                      .builder()
+                                                      .bucket(bucket)
+                                                      .build())) {
+                    minioClient.makeBucket(MakeBucketArgs
+                                                   .builder()
+                                                   .bucket(bucket)
+                                                   .build());
+                    log.info(
+                            "Bucket '{}' created successfully.",
+                            bucket
+                    );
                 }
                 else {
-                    log.info("Bucket '{}' already exists.", bucket);
+                    log.info(
+                            "Bucket '{}' already exists.",
+                            bucket
+                    );
                 }
             }
         } catch (
                 Exception e) {
-            log.error("Error initializing MinIO buckets", e);
+            log.error(
+                    "Error initializing MinIO buckets",
+                    e
+            );
         }
     }
 }

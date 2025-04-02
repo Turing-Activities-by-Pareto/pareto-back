@@ -8,7 +8,6 @@ import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.entity.FileEntity;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;
-import com.pareto.activities.mapper.IEventMapper;
 import com.pareto.activities.mapper.impl.EventMapper;
 import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
@@ -34,7 +33,9 @@ public class EventService {
     private final SubEventCategoryRepository subEventCategoryRepository;
     private final IStorageService minioStorageService;
 
-    public EventCreateResponse createEvent(EventRequest event) {
+    public EventCreateResponse createEvent(
+            EventRequest event
+    ) {
 
         EventEntity eventEntity = eventMapper.toEventEntity(event);
 
@@ -45,11 +46,7 @@ public class EventService {
         EventEntity eventEntityDB = eventRepository.save(eventEntity);
         String objectName = fileEntityDB.getId() + "." + event.getFileExtension();
 
-        String presignedUrl = minioStorageService.getObjectUrl(
-                "event-background",
-                objectName,
-                Method.PUT
-        );
+        String presignedUrl = minioStorageService.getObjectUrl("event-background", objectName, Method.PUT);
 
         fileEntityDB.setBucket("event-background");
         fileEntityDB.setObject(objectName);
@@ -64,11 +61,11 @@ public class EventService {
     }
 
     @Transactional
-    public EventGetResponse getEventById(Long eventId) {
-        return eventMapper.toEventGetResponse(
-                eventRepository.findById(eventId)
-                        .orElseThrow(() -> new BusinessException(BusinessStatus.EVENT_NOT_FOUND, HttpStatus.NOT_FOUND))
-        );
+    public EventGetResponse getEventById(
+            Long eventId
+    ) {
+        return eventMapper.toEventGetResponse(eventRepository.findById(eventId)
+                .orElseThrow(() -> new BusinessException(BusinessStatus.EVENT_NOT_FOUND, HttpStatus.NOT_FOUND)));
     }
 
     public List<EventsGetResponse> getEvents() {
@@ -78,11 +75,15 @@ public class EventService {
                 .toList();
     }
 
-    public String getObjectGetUrl(Long eventId) {
+    public String getObjectGetUrl(
+            Long eventId
+    ) {
         return getObjectUrlbyMethod(eventId, Method.GET);
     }
 
-    public String getObjectPutUrl(Long eventId) {
+    public String getObjectPutUrl(
+            Long eventId
+    ) {
         return getObjectUrlbyMethod(eventId, Method.PUT);
     }
 

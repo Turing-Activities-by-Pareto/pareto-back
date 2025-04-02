@@ -25,7 +25,8 @@ public class UserService {
     @Transactional
     public void createUser(UserCreateRequest user) {
 
-        UserEntity userEntity = UserEntity.builder()
+        UserEntity userEntity = UserEntity
+                .builder()
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .role(user.getRole())
@@ -34,26 +35,40 @@ public class UserService {
 
         userRepository.save(userEntity);
 
-        log.info("User created: {}", userEntity);
+        log.info(
+                "User created: {}",
+                userEntity
+        );
     }
 
     public List<UserResponse> retrieveUsers() {
 
         List<UserEntity> users = userRepository.findAll();
 
-        log.info("Users retrieved: {}", users);
+        log.info(
+                "Users retrieved: {}",
+                users
+        );
 
-        return users.stream()
+        return users
+                .stream()
                 .map(userMapper::toUserResponse)
                 .toList();
     }
 
     public UserResponse getUserByUsername(String username) {
 
-        UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new BusinessException(BusinessStatus.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+        UserEntity user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new BusinessException(
+                        BusinessStatus.USER_NOT_FOUND,
+                        HttpStatus.NOT_FOUND
+                ));
 
-        log.info("User retrieved: {}", user);
+        log.info(
+                "User retrieved: {}",
+                user
+        );
 
         return userMapper.toUserResponse(user);
     }
@@ -64,15 +79,22 @@ public class UserService {
             UserCreateRequest user
     ) {
 
-        UserEntity existingUserEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new BusinessException(BusinessStatus.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+        UserEntity existingUserEntity = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new BusinessException(
+                        BusinessStatus.USER_NOT_FOUND,
+                        HttpStatus.NOT_FOUND
+                ));
 
         UserEntity updatedUserEntity = userMapper.toUserEntity(user);
         updatedUserEntity.setId(existingUserEntity.getId());
 
         userRepository.save(updatedUserEntity);
 
-        log.info("User updated: {}", updatedUserEntity);
+        log.info(
+                "User updated: {}",
+                updatedUserEntity
+        );
 
         return userMapper.toUserResponse(updatedUserEntity);
     }
@@ -81,11 +103,18 @@ public class UserService {
     @Transactional
     public void deleteUser(String username) {
 
-        UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new BusinessException(BusinessStatus.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
+        UserEntity user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new BusinessException(
+                        BusinessStatus.USER_NOT_FOUND,
+                        HttpStatus.NOT_FOUND
+                ));
 
         userRepository.delete(user);
 
-        log.info("User deleted: {}", user);
+        log.info(
+                "User deleted: {}",
+                user
+        );
     }
 }
