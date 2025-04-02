@@ -46,7 +46,11 @@ public class EventService {
         EventEntity eventEntityDB = eventRepository.save(eventEntity);
         String objectName = fileEntityDB.getId() + "." + event.getFileExtension();
 
-        String presignedUrl = minioStorageService.getObjectUrl("event-background", objectName, Method.PUT);
+        String presignedUrl = minioStorageService.getObjectUrl(
+                "event-background",
+                objectName,
+                Method.PUT
+        );
 
         fileEntityDB.setBucket("event-background");
         fileEntityDB.setObject(objectName);
@@ -64,12 +68,17 @@ public class EventService {
     public EventGetResponse getEventById(
             Long eventId
     ) {
-        return eventMapper.toEventGetResponse(eventRepository.findById(eventId)
-                .orElseThrow(() -> new BusinessException(BusinessStatus.EVENT_NOT_FOUND, HttpStatus.NOT_FOUND)));
+        return eventMapper.toEventGetResponse(eventRepository
+                                                      .findById(eventId)
+                                                      .orElseThrow(() -> new BusinessException(
+                                                              BusinessStatus.EVENT_NOT_FOUND,
+                                                              HttpStatus.NOT_FOUND
+                                                      )));
     }
 
     public List<EventsGetResponse> getEvents() {
-        return eventRepository.findAll()
+        return eventRepository
+                .findAll()
                 .stream()
                 .map(eventMapper::toEventsGetResponse)
                 .toList();
@@ -78,27 +87,41 @@ public class EventService {
     public String getObjectGetUrl(
             Long eventId
     ) {
-        return getObjectUrlbyMethod(eventId, Method.GET);
+        return getObjectUrlbyMethod(
+                eventId,
+                Method.GET
+        );
     }
 
     public String getObjectPutUrl(
             Long eventId
     ) {
-        return getObjectUrlbyMethod(eventId, Method.PUT);
+        return getObjectUrlbyMethod(
+                eventId,
+                Method.PUT
+        );
     }
 
     private String getObjectUrlbyMethod(
             Long eventId,
             Method method
     ) {
-        FileEntity fileEntity = eventRepository.findById(eventId)
-                .orElseThrow(() -> new BusinessException(BusinessStatus.EVENT_NOT_FOUND, HttpStatus.NOT_FOUND))
+        FileEntity fileEntity = eventRepository
+                .findById(eventId)
+                .orElseThrow(() -> new BusinessException(
+                        BusinessStatus.EVENT_NOT_FOUND,
+                        HttpStatus.NOT_FOUND
+                ))
                 .getFile()
                 ;
 
         String objectName = fileEntity.getObject();
         String bucket = fileEntity.getBucket();
 
-        return minioStorageService.getObjectUrl(bucket, objectName, method);
+        return minioStorageService.getObjectUrl(
+                bucket,
+                objectName,
+                method
+        );
     }
 }

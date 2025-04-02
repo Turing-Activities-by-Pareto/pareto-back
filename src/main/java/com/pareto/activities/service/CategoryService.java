@@ -1,6 +1,5 @@
 package com.pareto.activities.service;
 
-import com.pareto.activities.DTO.CategoryResponse;
 import com.pareto.activities.entity.EventCategoryEntity;
 import com.pareto.activities.entity.SubEventCategoryEntity;
 import com.pareto.activities.repository.EventCategoryRepository;

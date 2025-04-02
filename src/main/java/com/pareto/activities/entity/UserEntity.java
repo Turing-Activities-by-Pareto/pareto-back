@@ -27,6 +27,8 @@ import java.util.List;
 @ToString
 public class UserEntity {
 
+    //TODO implement soft delete (disabled user)
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

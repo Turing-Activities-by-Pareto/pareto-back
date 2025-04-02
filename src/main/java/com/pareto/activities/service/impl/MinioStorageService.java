@@ -40,6 +40,7 @@ public class MinioStorageService implements IStorageService {
         } catch (
                 Exception e) {
             throw new BusinessException(
+                    e,
                     BusinessStatus.MINIO_ERROR,
                     HttpStatus.NO_CONTENT
             );
