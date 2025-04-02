@@ -169,7 +169,7 @@ public class DataInitializer {
                         ),
                         new SubEventCategoryEntity(
                                 0,
-                                "KHAMS",
+                                "KHAMSA",
                                 "sub-category-icon",
                                 "khams_obj",
                                 intellectual,
