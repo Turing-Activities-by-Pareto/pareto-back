@@ -9,7 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -38,9 +40,9 @@ public class DuplicationAspect {
     public void handleDuplicationPointcut(HandleDuplication handleDuplication) {
     }
 
-    @AfterReturning(value = "handleDuplicationPointcut(handleDuplication)", argNames = "joinPoint,handleDuplication")
+    @Around(value = "handleDuplicationPointcut(handleDuplication)", argNames = "joinPoint,handleDuplication")
     public void checkForDuplicates(
-            JoinPoint joinPoint,
+            ProceedingJoinPoint joinPoint,
             HandleDuplication handleDuplication
     ) throws Throwable {
 
@@ -66,6 +68,8 @@ public class DuplicationAspect {
         if (isDuplicate(requestKey)) {
             throw new BusinessException(BusinessStatus.DUPLICATE_REQUEST, HttpStatus.CONFLICT);
         }
+
+        joinPoint.proceed();
 
         cacheRequest(requestKey);
     }
