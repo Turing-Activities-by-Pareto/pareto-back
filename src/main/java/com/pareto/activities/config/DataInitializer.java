@@ -1,13 +1,16 @@
 package com.pareto.activities.config;
 
 import com.pareto.activities.entity.EventCategoryEntity;
-import com.pareto.activities.entity.SubEventCategoryEntity;
+import com.pareto.activities.entity.EventSubCategoryEntity;
+import com.pareto.activities.entity.FileEntity;
 import com.pareto.activities.repository.EventCategoryRepository;
-import com.pareto.activities.repository.SubEventCategoryRepository;
+import com.pareto.activities.repository.EventRepository;
+import com.pareto.activities.repository.EventSubCategoryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -16,7 +19,8 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner loadData(
             EventCategoryRepository eventCategoryRepository,
-            SubEventCategoryRepository subEventCategoryRepository
+            EventSubCategoryRepository subEventCategoryRepository,
+            EventRepository eventRepository
     ) {
         return args -> {
             if (eventCategoryRepository.count() == 0) { // Prevent duplicate inserts
@@ -25,176 +29,143 @@ public class DataInitializer {
                 EventCategoryEntity education = new EventCategoryEntity(
                         0,
                         "EDUCATION",
-                        "category-icon",
-                        "edu_object",
-                        null,
-                        null
+                        new FileEntity(),
+                        new ArrayList<>(),
+                        new ArrayList<>()
                 );
                 EventCategoryEntity entertainment = new EventCategoryEntity(
                         0,
                         "ENTERTAINMENT",
-                        "category-icon",
-                        "ent_object",
-                        null,
-                        null
+                        new FileEntity(),
+                        new ArrayList<>(),
+                        new ArrayList<>()
                 );
                 EventCategoryEntity intellectual = new EventCategoryEntity(
                         0,
                         "INTELLECTUAL",
-                        "category-icon",
-                        "int_object",
-                        null,
-                        null
+                        new FileEntity(),
+                        new ArrayList<>(),
+                        new ArrayList<>()
                 );
 
-                education = eventCategoryRepository.save(education);
-                entertainment = eventCategoryRepository.save(entertainment);
-                intellectual = eventCategoryRepository.save(intellectual);
-
                 // Create Sub Categories
-                List<SubEventCategoryEntity> subCategories = List.of(
-                        new SubEventCategoryEntity(
+                List<EventSubCategoryEntity> educationSubCategories = List.of(
+                        new EventSubCategoryEntity(
                                 0,
                                 "HACKATHON",
-                                "sub-category-icon",
-                                "hackathon_obj",
                                 education,
-                                null
+                                new ArrayList<>()
                         ),
-                        new SubEventCategoryEntity(
+                        new EventSubCategoryEntity(
                                 0,
                                 "TECH-TALK",
-                                "sub-category-icon",
-                                "tech_talk_obj",
                                 education,
-                                null
+                                new ArrayList<>()
                         ),
-                        new SubEventCategoryEntity(
+                        new EventSubCategoryEntity(
                                 0,
                                 "WORKSHOP",
-                                "sub-category-icon",
-                                "workshop_obj",
                                 education,
-                                null
+                                new ArrayList<>()
                         ),
-                        new SubEventCategoryEntity(
+                        new EventSubCategoryEntity(
                                 0,
                                 "OTHER",
-                                "sub-category-icon",
-                                "other_obj",
                                 education,
-                                null
-                        ),
-
-                        new SubEventCategoryEntity(
-                                0,
-                                "FOOTBALL",
-                                "sub-category-icon",
-                                "football_obj",
-                                entertainment,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "VOLLEYBALL",
-                                "sub-category-icon",
-                                "volleyball_obj",
-                                entertainment,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "BOWLING",
-                                "sub-category-icon",
-                                "bowling_obj",
-                                entertainment,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "TRIPS",
-                                "sub-category-icon",
-                                "trips_obj",
-                                entertainment,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "MAFIA",
-                                "sub-category-icon",
-                                "mafia_obj",
-                                entertainment,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "BOARD GAMES",
-                                "sub-category-icon",
-                                "board_games_obj",
-                                entertainment,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "PICNIC",
-                                "sub-category-icon",
-                                "picnic_obj",
-                                entertainment,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "OTHER",
-                                "sub-category-icon",
-                                "other_obj",
-                                entertainment,
-                                null
-                        ),
-
-                        new SubEventCategoryEntity(
-                                0,
-                                "CHESS",
-                                "sub-category-icon",
-                                "chess_obj",
-                                intellectual,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "NHN",
-                                "sub-category-icon",
-                                "nhn_obj",
-                                intellectual,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "KHAMSA",
-                                "sub-category-icon",
-                                "khams_obj",
-                                intellectual,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "KUDOS",
-                                "sub-category-icon",
-                                "kudos_obj",
-                                intellectual,
-                                null
-                        ),
-                        new SubEventCategoryEntity(
-                                0,
-                                "OTHER",
-                                "sub-category-icon",
-                                "other_obj",
-                                intellectual,
-                                null
+                                new ArrayList<>()
                         )
                 );
 
-                subEventCategoryRepository.saveAll(
-                        subCategories);
+                List<EventSubCategoryEntity> entertainmentSubCategories = List.of(
+                        new EventSubCategoryEntity(
+                                0,
+                                "FOOTBALL",
+                                entertainment,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "VOLLEYBALL",
+                                entertainment,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "BOWLING",
+                                entertainment,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "TRIPS",
+                                entertainment,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "MAFIA",
+                                entertainment,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "BOARD GAMES",
+                                entertainment,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "PICNIC",
+                                entertainment,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "OTHER",
+                                entertainment,
+                                new ArrayList<>()
+                        )
+                );
+                List<EventSubCategoryEntity> intellectualSubCategories = List.of(
+                        new EventSubCategoryEntity(
+                                0,
+                                "CHESS",
+                                intellectual,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "NHN",
+                                intellectual,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "KHAMSA",
+                                intellectual,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "KUDOS",
+                                intellectual,
+                                new ArrayList<>()
+                        ),
+                        new EventSubCategoryEntity(
+                                0,
+                                "OTHER",
+                                intellectual,
+                                new ArrayList<>()
+                        )
+                );
+
+                education.addAllSubCategory(educationSubCategories);
+                entertainment.addAllSubCategory(entertainmentSubCategories);
+                intellectual.addAllSubCategory(intellectualSubCategories);
+
+                eventCategoryRepository.save(education);
+                eventCategoryRepository.save(entertainment);
+                eventCategoryRepository.save(intellectual);
             }
         };
     }

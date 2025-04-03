@@ -1,6 +1,7 @@
 package com.pareto.activities.entity;
 
 import com.pareto.activities.enums.ERequestStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -42,7 +43,9 @@ public class EventRequestEntity {
     private EventEntity event;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private ERequestStatus status;
 
+    @Column(name = "requestDate", nullable = false)
     private LocalDateTime requestDate;
 }

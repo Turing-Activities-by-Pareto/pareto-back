@@ -1,6 +1,7 @@
 package com.pareto.activities.entity;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,6 +35,7 @@ public class EventCategoryEntity {
     @EqualsAndHashCode.Include
     private long id;
 
+    @Column(name = "name", nullable = false)
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -41,7 +44,7 @@ public class EventCategoryEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventSubCategoryEntity> subCategories;
 
-    @ManyToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventEntity> events;
 
     //helper methods for subCategories
@@ -53,5 +56,22 @@ public class EventCategoryEntity {
     public void removeSubCategory(EventSubCategoryEntity subCategory) {
         subCategories.remove(subCategory);
         subCategory.setCategory(null);
+    }
+
+    public void addAllSubCategory(List<EventSubCategoryEntity> subCategories) {
+        for (EventSubCategoryEntity subCategory : subCategories) {
+            this.addSubCategory(subCategory);
+        }
+    }
+
+    //helper methods for events
+    public void addEvent(EventEntity event) {
+        events.add(event);
+        event.setCategory(this);
+    }
+
+    public void removeEvent(EventEntity event) {
+        events.remove(event);
+        event.setCategory(null);
     }
 }

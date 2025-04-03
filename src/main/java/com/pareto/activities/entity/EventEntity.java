@@ -51,27 +51,21 @@ public class EventEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @Column(name = "title", nullable = false)
     private String title;
+
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Getter(AccessLevel.NONE)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "event_event_category",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_category_id")
-    )
-    private Set<EventCategoryEntity> categories;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_category_id", nullable = false)
+    private EventCategoryEntity category;
 
-    @Getter(AccessLevel.NONE)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "event_event_sub_category",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "event_sub_category_id")
-    )
-    private List<EventSubCategoryEntity> subCategories;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_sub_category_id", nullable = false)
+    private EventSubCategoryEntity subCategory;
 
+    @Column(name = "place", nullable = false)
     private String place;
 
     @ElementCollection(targetClass = EParticipantCategory.class, fetch = FetchType.EAGER)
@@ -82,17 +76,23 @@ public class EventEntity {
     @Column(name = "participant_category")
     private List<EParticipantCategory> participantCategories;
 
+    @Column(name = "deadline", nullable = false)
     private LocalDateTime deadline;
+
+    @Column(name = "startDate", nullable = false)
     private LocalDateTime startDate;
+
+    @Column(name = "endDate", nullable = false)
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "confirmStatus", nullable = false)
     private EConfirmStatus confirmStatus;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventRequestEntity> requests;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id")
     private FileEntity file;
 
@@ -105,27 +105,5 @@ public class EventEntity {
     public void removeRequest(EventRequestEntity request) {
         requests.remove(request);
         request.setEvent(null);
-    }
-
-    //helper methods for categories
-    public void addCategory(EventCategoryEntity category) {
-        categories.add(category);
-        category.getEvents().add(this);
-    }
-
-    public void removeCategory(EventCategoryEntity category) {
-        categories.remove(category);
-        category.getEvents().remove(this);
-    }
-
-    //helper methods for subCategories
-    public void addSubCategory(EventSubCategoryEntity subCategory) {
-        subCategories.add(subCategory);
-        subCategory.getEvents().add(this);
-    }
-
-    public void removeSubCategory(EventSubCategoryEntity subCategory) {
-        subCategories.remove(subCategory);
-        subCategory.getEvents().remove(this);
     }
 }
