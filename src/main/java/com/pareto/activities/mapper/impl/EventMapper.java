@@ -74,13 +74,15 @@ public class EventMapper implements IEventMapper {
             );
         }
 
-        entity.setSubCategory(subEventCategoryRepository
-                                      .findByName(request.getSubCategory())
-                                      .orElseThrow(() -> new BusinessException(
-                                              "Event sub category not found : " + request.getSubCategory(),
-                                              BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND,
-                                              HttpStatus.NOT_FOUND
-                                      )));
+        entity.setSubCategory(
+                subEventCategoryRepository
+                        .findByName(request.getSubCategory())
+                        .orElseThrow(() -> new BusinessException(
+                                "Event sub category not found : " + request.getSubCategory(),
+                                BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND,
+                                HttpStatus.NOT_FOUND
+                        ))
+        );
 
         return entity;
     }
@@ -89,9 +91,11 @@ public class EventMapper implements IEventMapper {
     public EventCreateResponse toEventCreateResponse(EventEntity eventEntity) {
         EventCreateResponse eventCreateResponse = mapper.toEventCreateResponse(eventEntity);
 
-        eventCreateResponse.setCategory(eventEntity
-                                                .getCategory()
-                                                .getName());
+        eventCreateResponse.setCategory(
+                eventEntity
+                        .getCategory()
+                        .getName()
+        );
 
         return eventCreateResponse;
     }
@@ -101,9 +105,11 @@ public class EventMapper implements IEventMapper {
 
         EventGetResponse response = mapper.toEventGetResponse(eventEntity);
 
-        response.setCategory(eventEntity
-                                     .getCategory()
-                                     .getName());
+        response.setCategory(
+                eventEntity
+                        .getCategory()
+                        .getName()
+        );
 
         return response;
     }
@@ -112,9 +118,11 @@ public class EventMapper implements IEventMapper {
     public EventsGetResponse toEventsGetResponse(EventEntity eventEntity) {
         EventsGetResponse response = mapper.toEventsGetResponse(eventEntity);
 
-        response.setCategory(eventEntity
-                                     .getCategory()
-                                     .getName());
+        response.setCategory(
+                eventEntity
+                        .getCategory()
+                        .getName()
+        );
 
         return response;
     }

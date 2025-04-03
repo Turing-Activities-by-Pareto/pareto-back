@@ -12,6 +12,8 @@ import com.pareto.activities.repository.EventRequestRepository;
 import com.pareto.activities.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -37,13 +39,18 @@ public class EventRequestService {
                         ));
     }
 
-    public List<EvReqResponse> getEventRequests() {
-
+    public Page<EvReqResponse> getEventRequests(
+            int page,
+            int size
+    ) {
         return eventRequestRepository
-                .findAll()
-                .stream()
-                .map(IEventRequestMapper::toEvReqResponse)
-                .toList();
+                .findAll(
+                        PageRequest.of(
+                                page,
+                                size
+                        )
+                )
+                .map(IEventRequestMapper::toEvReqResponse);
     }
 
 

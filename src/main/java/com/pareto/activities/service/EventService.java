@@ -16,6 +16,8 @@ import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -68,12 +70,14 @@ public class EventService {
     public EventGetResponse getEventById(
             Long eventId
     ) {
-        return eventMapper.toEventGetResponse(eventRepository
-                                                      .findById(eventId)
-                                                      .orElseThrow(() -> new BusinessException(
-                                                              BusinessStatus.EVENT_NOT_FOUND,
-                                                              HttpStatus.NOT_FOUND
-                                                      )));
+        return eventMapper.toEventGetResponse(
+                eventRepository
+                        .findById(eventId)
+                        .orElseThrow(() -> new BusinessException(
+                                BusinessStatus.EVENT_NOT_FOUND,
+                                HttpStatus.NOT_FOUND
+                        ))
+        );
     }
 
     public List<EventsGetResponse> getEvents() {
@@ -123,5 +127,19 @@ public class EventService {
                 objectName,
                 method
         );
+    }
+
+    public Page<EventsGetResponse> getEventsPage(
+            int page,
+            int size
+    ) {
+        return eventRepository
+                .findAll(
+                        PageRequest.of(
+                                page,
+                                size
+                        )
+                )
+                .map(eventMapper::toEventsGetResponse);
     }
 }

@@ -18,9 +18,15 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping
+    @GetMapping("categories")
     @ResponseStatus(HttpStatus.OK)
     public Map<String, List<String>> getAllWithSubCategories() {
         return categoryService.getAllWithSubCategories();
+    }
+
+    @GetMapping("/sub-categories")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, String> subCategoriesAlongsideCategory() {
+        return categoryService.subCategoriesAlongsideCategory();
     }
 }
