@@ -39,7 +39,7 @@ public class DuplicationAspect {
     }
 
     @Around(value = "handleDuplicationPointcut(handleDuplication)", argNames = "joinPoint,handleDuplication")
-    public void checkForDuplicates(
+    public Object checkForDuplicates(
             ProceedingJoinPoint joinPoint,
             HandleDuplication handleDuplication
     )
@@ -78,9 +78,11 @@ public class DuplicationAspect {
             );
         }
 
-        joinPoint.proceed();
+        Object res = joinPoint.proceed();
 
         cacheRequest(requestKey);
+
+        return res;
     }
 
     private String generateRequestKey(
@@ -135,4 +137,3 @@ public class DuplicationAspect {
         );
     }
 }
-
