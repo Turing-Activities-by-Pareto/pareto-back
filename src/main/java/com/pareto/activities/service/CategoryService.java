@@ -41,9 +41,9 @@ public class CategoryService {
     public Map<String, String> subCategoriesAlongsideCategory() {
         Map<String, String> categories = new HashMap<>();
 
-        List<SubEventCategoryEntity> all = subEventCategoryRepository.findAll();
+        List<EventSubCategoryEntity> all = eventSubCategoryRepository.findAll();
 
-        for (SubEventCategoryEntity subCategory : all) {
+        for (EventSubCategoryEntity subCategory : all) {
             categories.put(
                     subCategory.getName(),
                     subCategory.getCategory().getName()
