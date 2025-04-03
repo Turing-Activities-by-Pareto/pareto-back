@@ -11,7 +11,7 @@ import com.pareto.activities.exception.BusinessException;
 import com.pareto.activities.mapper.impl.EventMapper;
 import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
-import com.pareto.activities.repository.SubEventCategoryRepository;
+import com.pareto.activities.repository.EventSubCategoryRepository;
 import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class EventService {
     private final EventMapper eventMapper;
     private final FileRepository fileRepository;
     private final EventCategoryRepository eventCategoryRepository;
-    private final SubEventCategoryRepository subEventCategoryRepository;
+    private final EventSubCategoryRepository eventSubCategoryRepository;
     private final IStorageService minioStorageService;
 
     public EventCreateResponse createEvent(

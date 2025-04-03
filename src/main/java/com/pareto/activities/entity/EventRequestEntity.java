@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
@@ -22,22 +23,22 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "event_request")
 @Builder
 public class EventRequestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private long id;
 
     @ManyToOne
     @JoinColumn(name = "_user_id", nullable = false, updatable = false)
-    @ToString.Exclude
     private UserEntity user;
 
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false, updatable = false)
-    @ToString.Exclude
     private EventEntity event;
 
     @Enumerated(EnumType.STRING)

@@ -9,7 +9,7 @@ import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;
 import com.pareto.activities.mapper.IEventMapper;
 import com.pareto.activities.repository.EventCategoryRepository;
-import com.pareto.activities.repository.SubEventCategoryRepository;
+import com.pareto.activities.repository.EventSubCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +25,7 @@ public class EventMapper implements IEventMapper {
 
     @Qualifier("IEventMapperImpl")
     private final IEventMapper mapper;
-    private final SubEventCategoryRepository subEventCategoryRepository;
+    private final EventSubCategoryRepository eventSubCategoryRepository;
     private final EventCategoryRepository eventCategoryRepository;
 
     @Override
@@ -44,7 +44,7 @@ public class EventMapper implements IEventMapper {
                                    )
         );
 
-        if (subEventCategoryRepository
+        if (eventSubCategoryRepository
                 .findByName(request.getSubCategory())
                 .isEmpty()) {
             throw new BusinessException(
@@ -56,7 +56,7 @@ public class EventMapper implements IEventMapper {
 
         if (
                 !StringUtils.equals(
-                        subEventCategoryRepository
+                        eventSubCategoryRepository
                                 .findByName(request.getSubCategory())
                                 .get()
                                 .getCategory()
@@ -74,15 +74,13 @@ public class EventMapper implements IEventMapper {
             );
         }
 
-        entity.setSubCategory(
-                subEventCategoryRepository
-                        .findByName(request.getSubCategory())
-                        .orElseThrow(() -> new BusinessException(
-                                "Event sub category not found : " + request.getSubCategory(),
-                                BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND,
-                                HttpStatus.NOT_FOUND
-                        ))
-        );
+        entity.setSubCategory(eventSubCategoryRepository
+                                      .findByName(request.getSubCategory())
+                                      .orElseThrow(() -> new BusinessException(
+                                              "Event sub category not found : " + request.getSubCategory(),
+                                              BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND,
+                                              HttpStatus.NOT_FOUND
+                                      )));
 
         return entity;
     }
@@ -91,11 +89,9 @@ public class EventMapper implements IEventMapper {
     public EventCreateResponse toEventCreateResponse(EventEntity eventEntity) {
         EventCreateResponse eventCreateResponse = mapper.toEventCreateResponse(eventEntity);
 
-        eventCreateResponse.setCategory(
-                eventEntity
-                        .getCategory()
-                        .getName()
-        );
+        eventCreateResponse.setCategory(eventEntity
+                                                .getCategory()
+                                                .getName());
 
         return eventCreateResponse;
     }
@@ -105,11 +101,9 @@ public class EventMapper implements IEventMapper {
 
         EventGetResponse response = mapper.toEventGetResponse(eventEntity);
 
-        response.setCategory(
-                eventEntity
-                        .getCategory()
-                        .getName()
-        );
+        response.setCategory(eventEntity
+                                     .getCategory()
+                                     .getName());
 
         return response;
     }
@@ -118,11 +112,9 @@ public class EventMapper implements IEventMapper {
     public EventsGetResponse toEventsGetResponse(EventEntity eventEntity) {
         EventsGetResponse response = mapper.toEventsGetResponse(eventEntity);
 
-        response.setCategory(
-                eventEntity
-                        .getCategory()
-                        .getName()
-        );
+        response.setCategory(eventEntity
+                                     .getCategory()
+                                     .getName());
 
         return response;
     }
