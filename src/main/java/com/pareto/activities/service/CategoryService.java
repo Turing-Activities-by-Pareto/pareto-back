@@ -1,9 +1,9 @@
 package com.pareto.activities.service;
 
 import com.pareto.activities.entity.EventCategoryEntity;
-import com.pareto.activities.entity.SubEventCategoryEntity;
+import com.pareto.activities.entity.EventSubCategoryEntity;
 import com.pareto.activities.repository.EventCategoryRepository;
-import com.pareto.activities.repository.SubEventCategoryRepository;
+import com.pareto.activities.repository.EventSubCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
 
     private final EventCategoryRepository eventCategoryRepository;
-    private final SubEventCategoryRepository subEventCategoryRepository;
+    private final EventSubCategoryRepository eventSubCategoryRepository;
 
     public Map<String, List<String>> getAllWithSubCategories() {
         Map<String, List<String>> categories = new HashMap<>();
@@ -27,10 +27,10 @@ public class CategoryService {
         for (EventCategoryEntity category : all) {
             categories.put(
                     category.getName(),
-                    subEventCategoryRepository
+                    eventSubCategoryRepository
                             .findByCategory(category)
                             .stream()
-                            .map(SubEventCategoryEntity::getName)
+                            .map(EventSubCategoryEntity::getName)
                             .collect(Collectors.toList())
             );
         }
