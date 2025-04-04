@@ -13,13 +13,13 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -41,9 +41,11 @@ public class EventCategoryEntity {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private FileEntity file;
 
+    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventSubCategoryEntity> subCategories;
 
+    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventEntity> events;
 
