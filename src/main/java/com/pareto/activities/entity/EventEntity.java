@@ -13,12 +13,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,8 +33,15 @@ import java.util.List;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "event")
 @Builder
+@Table(
+        name = "event",
+        indexes = {
+                @Index(name = "idx_category", columnList = "category"),
+                @Index(name = "idx_sub_category", columnList = "subCategory"),
+                @Index(name = "idx_subCategory", columnList = "subCategory")
+        }
+)
 public class EventEntity {
 
     @Id
@@ -43,45 +50,41 @@ public class EventEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private UserEntity user;
 
-    @Column(name = "title", nullable = false)
+//    @Column(name = "title", nullable = true)
     private String title;
 
-    @Column(name = "description", nullable = false)
+//    @Column(name = "description", nullable = true)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_category_id", nullable = false)
-    private EventCategoryEntity category;
+    private String category;
+    private String subCategory;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_sub_category_id", nullable = false)
-    private EventSubCategoryEntity subCategory;
-
-    @Column(name = "place", nullable = false)
+//    @Column(name = "place", nullable = true)
     private String place;
 
     @ElementCollection(targetClass = EParticipantCategory.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    // Store enum as string in DB
-    @CollectionTable(name = "event_allowed_categories",
-            joinColumns = @JoinColumn(name = "event_id"))
+    @CollectionTable(
+            name = "event_allowed_categories",
+            joinColumns = @JoinColumn(name = "event_id")
+    )
     @Column(name = "participant_category")
     private List<EParticipantCategory> participantCategories;
 
-    @Column(name = "deadline", nullable = false)
+    @Column(name = "deadline", nullable = true)
     private LocalDateTime deadline;
 
-    @Column(name = "startDate", nullable = false)
+    @Column(name = "startDate", nullable = true)
     private LocalDateTime startDate;
 
-    @Column(name = "endDate", nullable = false)
+    @Column(name = "endDate", nullable = true)
     private LocalDateTime endDate;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "confirmStatus", nullable = false)
+    @Column(name = "confirmStatus", nullable = true)
     private EConfirmStatus confirmStatus;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -90,15 +93,4 @@ public class EventEntity {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id")
     private FileEntity file;
-
-    //helper methods for requests
-    public void addRequest(EventRequestEntity request) {
-        requests.add(request);
-        request.setEvent(this);
-    }
-
-    public void removeRequest(EventRequestEntity request) {
-        requests.remove(request);
-        request.setEvent(null);
-    }
 }

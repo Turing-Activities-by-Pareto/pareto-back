@@ -6,7 +6,7 @@ import com.pareto.activities.entity.EventRequestEntity;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.enums.ERequestStatus;
 import com.pareto.activities.exception.BusinessException;
-import com.pareto.activities.mapper.impl.EventRequestMapper;
+import com.pareto.activities.mapper.IEventRequestMapper;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.EventRequestRepository;
 import com.pareto.activities.repository.UserRepository;
@@ -23,7 +23,7 @@ import java.util.List;
 @Service
 public class EventRequestService {
     private final EventRequestRepository eventRequestRepository;
-    private final EventRequestMapper IEventRequestMapper;
+    private final IEventRequestMapper IEventRequestMapper;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 

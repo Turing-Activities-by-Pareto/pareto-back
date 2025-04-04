@@ -11,7 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 public class DataInitializer {
@@ -23,6 +26,13 @@ public class DataInitializer {
             EventRepository eventRepository
     ) {
         return args -> {
+
+            Map<String, String> strCategories = new HashMap<>();
+
+            strCategories.put("ENTERTAINMENT", String.join(", ", Arrays.asList("FOOTBALL", "VOLLEYBALL", "BOWLING", "TRIPS", "MAFIA", "BOARD GAMES", "PICNIC", "OTHER")));
+            strCategories.put("INTELLECTUAL", String.join(", ", Arrays.asList("CHESS", "NHN", "KHAMSA", "KUDOS", "OTHER")));
+            strCategories.put("EDUCATION", String.join(", ", Arrays.asList("HACKATHON", "TECH-TALK", "WORKSHOP", "OTHER")));
+
             if (eventCategoryRepository.count() == 0) { // Prevent duplicate inserts
 
                 // Create Event Categories
