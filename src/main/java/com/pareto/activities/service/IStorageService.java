@@ -8,4 +8,6 @@ public interface IStorageService {
             String objectName,
             Method method
     );
+
+    String generateUniqueFileName();
 }

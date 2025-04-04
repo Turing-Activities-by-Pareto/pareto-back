@@ -6,6 +6,7 @@ import com.pareto.activities.DTO.EventRequest;
 import com.pareto.activities.DTO.EventsGetResponse;
 import com.pareto.activities.entity.EventEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import org.mapstruct.factory.Mappers;
 
@@ -14,13 +15,13 @@ public interface EventMapper {
 
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    EventEntity toEventEntity(
-            EventRequest eventRequest
-    );
+    @Mapping(target = "categoryId", source = "category")
+    @Mapping(target = "subCategoryId", source = "subCategory")
+    EventEntity toEventEntity(EventRequest eventRequest);
 
-    EventCreateResponse toEventCreateResponse(
-            EventEntity eventEntity
-    );
+    @Mapping(target = "category", source = "categoryId")
+    @Mapping(target = "subCategory", source = "subCategoryId")
+    EventCreateResponse toEventCreateResponse(EventEntity eventEntity);
 
 
     EventGetResponse toEventGetResponse(

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -45,5 +46,10 @@ public class MinioStorageService implements IStorageService {
                     HttpStatus.NO_CONTENT
             );
         }
+    }
+
+    public String generateUniqueFileName() {
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        return timestamp + "-" + UUID.randomUUID();
     }
 }

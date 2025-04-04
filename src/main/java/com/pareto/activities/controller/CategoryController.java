@@ -12,13 +12,13 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/categories")
 @RequiredArgsConstructor
 public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @GetMapping("categories")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Map<String, List<String>> getAllWithSubCategories() {
         return categoryService.getAllWithSubCategories();

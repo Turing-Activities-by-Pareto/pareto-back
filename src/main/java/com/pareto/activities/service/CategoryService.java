@@ -20,21 +20,20 @@ public class CategoryService {
     private final EventSubCategoryRepository eventSubCategoryRepository;
 
     public Map<String, List<String>> getAllWithSubCategories() {
-        Map<String, List<String>> categories = new HashMap<>();
+        List<EventCategoryEntity> categories = eventCategoryRepository.findAll();
 
-        List<EventCategoryEntity> all = eventCategoryRepository.findAll();
+        List<EventSubCategoryEntity> subCategories = eventSubCategoryRepository.findAll();
 
-        for (EventCategoryEntity category : all) {
-            categories.put(
-                    category.getName(),
-                    eventSubCategoryRepository
-                            .findByCategory(category)
-                            .stream()
-                            .map(EventSubCategoryEntity::getName)
-                            .collect(Collectors.toList())
-            );
+        Map<String, List<String>> categorySubCategoriesMap = new HashMap<>();
+        for (EventCategoryEntity category : categories) {
+            List<String> subCategoryNames = subCategories.stream()
+                    .filter(subCategory -> subCategory.getCategoryId().equals(category.getId()))
+                    .map(EventSubCategoryEntity::getName)
+                    .collect(Collectors.toList());
+
+            categorySubCategoriesMap.put(category.getName(), subCategoryNames);
         }
 
-        return categories;
+        return categorySubCategoriesMap;
     }
 }

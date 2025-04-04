@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Arrays;
-
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
@@ -22,26 +20,22 @@ public class BucketInitializer {
     public void initializeBuckets() {
 
         String[] defaultBuckets = minioConfig.getDefaultBuckets();
-        Arrays
-                .stream(defaultBuckets)
-                .forEach(System.out::println);
 
         try {
             for (String bucket : defaultBuckets) {
                 if (!minioClient.bucketExists(BucketExistsArgs
-                                                      .builder()
-                                                      .bucket(bucket)
-                                                      .build())) {
+                        .builder()
+                        .bucket(bucket)
+                        .build())) {
                     minioClient.makeBucket(MakeBucketArgs
-                                                   .builder()
-                                                   .bucket(bucket)
-                                                   .build());
+                            .builder()
+                            .bucket(bucket)
+                            .build());
                     log.info(
                             "Bucket '{}' created successfully.",
                             bucket
                     );
-                }
-                else {
+                } else {
                     log.info(
                             "Bucket '{}' already exists.",
                             bucket

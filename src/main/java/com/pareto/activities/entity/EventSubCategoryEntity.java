@@ -22,6 +22,5 @@ public class EventSubCategoryEntity {
     private String id;
     private String name;
 
-    @DBRef
-    private EventCategoryEntity category;
+    private String categoryId;
 }
