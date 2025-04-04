@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Builder
 public class EvReqResponse {
-    private Long eventId;
+    private String eventId;
     private ERequestStatus status;
-    private Long userId;
+    private String userId;
 }

@@ -37,19 +37,4 @@ public class CategoryService {
 
         return categories;
     }
-
-    public Map<String, String> subCategoriesAlongsideCategory() {
-        Map<String, String> categories = new HashMap<>();
-
-        List<EventSubCategoryEntity> all = eventSubCategoryRepository.findAll();
-
-        for (EventSubCategoryEntity subCategory : all) {
-            categories.put(
-                    subCategory.getName(),
-                    subCategory.getCategory().getName()
-            );
-        }
-
-        return categories;
-    }
 }
