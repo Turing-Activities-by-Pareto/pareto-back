@@ -7,9 +7,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -64,16 +61,5 @@ public class EventCategoryEntity {
         for (EventSubCategoryEntity subCategory : subCategories) {
             this.addSubCategory(subCategory);
         }
-    }
-
-    //helper methods for events
-    public void addEvent(EventEntity event) {
-        events.add(event);
-        event.setCategory(this);
-    }
-
-    public void removeEvent(EventEntity event) {
-        events.remove(event);
-        event.setCategory(null);
     }
 }

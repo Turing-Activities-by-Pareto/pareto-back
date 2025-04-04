@@ -6,10 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,15 +38,4 @@ public class EventSubCategoryEntity {
 
     @OneToMany(mappedBy = "subCategory")
     private List<EventEntity> events;
-
-    //helper methods for events
-    public void addEvent(EventEntity event) {
-        events.add(event);
-        event.setSubCategory(this);
-    }
-
-    public void removeEvent(EventEntity event) {
-        events.remove(event);
-        event.setSubCategory(null);
-    }
 }

@@ -38,14 +38,14 @@ public class UserEntity {
     @EqualsAndHashCode.Include
     private long id;
 
-    @Column(name = "username", nullable = false)
+//    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "password", nullable = false)
+//    @Column(name = "password", nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+//    @Column(name = "role", nullable = false)
     private EParticipantCategory role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -55,15 +55,15 @@ public class UserEntity {
     private List<EventRequestEntity> eventRequests;
 
     //helper methods for events
-    public void addEvent(EventEntity event) {
-        events.add(event);
-        event.setUser(this);
-    }
-
-    public void removeEvent(EventEntity event) {
-        events.remove(event);
-        event.setUser(null);
-    }
+//    public void addEvent(EventEntity event) {
+//        events.add(event);
+//        event.setUser(this);
+//    }
+//
+//    public void removeEvent(EventEntity event) {
+//        events.remove(event);
+//        event.setUser(null);
+//    }
 
     //helper methods for eventRequest
     public void addEventRequests(EventRequestEntity eventRequest) {
