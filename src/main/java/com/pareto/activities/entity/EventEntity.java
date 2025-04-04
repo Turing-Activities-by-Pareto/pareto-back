@@ -2,11 +2,13 @@ package com.pareto.activities.entity;
 
 import com.pareto.activities.enums.EConfirmStatus;
 import com.pareto.activities.enums.EParticipantCategory;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +20,7 @@ import java.util.Set;
 @Document
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(onlyExplicitlyIncluded = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -38,7 +41,7 @@ public class EventEntity {
     private FileEntity file;
 
     @DBRef
-    private List<EventRequestEntity> requests;
+    private Set<EventRequestEntity> requests;
 
     private Set<EParticipantCategory> participantCategories;
 }

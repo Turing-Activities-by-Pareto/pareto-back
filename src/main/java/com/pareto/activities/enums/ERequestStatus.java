@@ -2,6 +2,8 @@ package com.pareto.activities.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.pareto.activities.exception.BusinessException;
+import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 
@@ -10,6 +12,10 @@ public enum ERequestStatus {
     APPROVED,
     DECLINED,
     ;
+
+    public String toDisplayName() {
+        return name().toUpperCase();
+    }
 
     @JsonValue
     public static String toValue(ERequestStatus status) {
@@ -24,6 +30,12 @@ public enum ERequestStatus {
                         .name()
                         .equalsIgnoreCase(status))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(
+                        () -> new BusinessException(
+                                "Invalid request status: " + status,
+                                BusinessStatus.UNDEFINED_REQUEST_STATUS,
+                                HttpStatus.BAD_REQUEST
+                        )
+                );
     }
 }

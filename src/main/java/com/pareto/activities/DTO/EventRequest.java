@@ -4,32 +4,18 @@ import com.pareto.activities.enums.EParticipantCategory;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class EventRequest {
-    //    @NotEmpty
     private String title;
     private String description;
     private String category;
     private String subCategory;
     private String place;
-
-    //    @NotNull
-    private List<EParticipantCategory> participantCategories;
-
-    //    @NotEmpty
-//    @FutureOrPresent
+    private Set<EParticipantCategory> participantCategories;
     private LocalDateTime deadline;
-
-    //    @NotNull
-//    @FutureOrPresent
     private LocalDateTime startDate;
-
-    //    @NotNull
-//    @PastOrPresent
     private LocalDateTime endDate;
-
-    //    @NotEmpty
     private String fileExtension;
 }
