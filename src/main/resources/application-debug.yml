@@ -4,19 +4,16 @@ spring:
       mode: always
   application:
     name: activities
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/activities
-    username: user
-    password: 12345678
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+  data:
+    mongodb:
+#      username: bisco
+#      password: biscobisco
+#      host: localhost
+#      port: 27017
+#      database: activities
+      uri: mongodb://admin:secretpassword@localhost:27017/activities?authSource=admin
+  elasticsearch:
+    uris: http://localhost:9200
 
 redis:
   host: localhost

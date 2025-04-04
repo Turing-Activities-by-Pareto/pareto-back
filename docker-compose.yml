@@ -3,6 +3,8 @@ volumes:
   activities_pdata:
   redis_data:
     driver: local
+  mongo_data:
+  es_data:
 
 services:
   minio:
@@ -20,46 +22,30 @@ services:
     volumes:
       - minio_activities:/data
 
-  postgres-compose:
-    image: postgres
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=12345678
-      - POSTGRES_DB=activities
-    ports:
-      - "5432:5432"
-    volumes:
-      - activities_pdata:/var/lib/postgresql/data
-
-  java-app:
-    image: mr3iscuit/activities:latest
-    container_name: activities_backend
-    ports:
-        - "9090:9090"
-    depends_on:
-        - postgres-compose
-        - minio
-    pull_policy: always
-    environment:
-      - SPRING_PROFILES_ACTIVE=compose
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-compose:5432/activities
-      - SPRING_DATASOURCE_USERNAME=user
-      - SPRING_DATASOURCE_PASSWORD=12345678
-      - MINIO_URL=http://minio:9000
-      - MINIO_ACCESS_KEY=minioadmin
-      - MINIO_SECRET_KEY=minioadmin
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=redis
-
-  react-app:
-    image: mr3iscuit/pareto-front:latest
-    container_name: activities_front
-    ports:
-      - "8080:5173"
-    depends_on:
-      - java-app
-    pull_policy: always
+#  java-app:
+#    image: mr3iscuit/activities:latest
+#    container_name: activities_backend
+#    ports:
+#      - "9090:9090"
+#    depends_on:
+#      - minio
+#      - mongodb
+#    pull_policy: always
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=compose
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-compose:5432/activities
+#      - SPRING_DATASOURCE_USERNAME=user
+#      - SPRING_DATASOURCE_PASSWORD=12345678
+#      - MINIO_URL=http://minio:9000
+#      - MINIO_ACCESS_KEY=minioadmin
+#      - MINIO_SECRET_KEY=minioadmin
+#      - REDIS_HOST=redis
+#      - REDIS_PORT=6379
+#      - REDIS_PASSWORD=redis
+#      - MONGODB_URI=mongodb://mongodb:27017/activities
+#      - MONGODB_USERNAME=bisco
+#      - MONGODB_PASSWORD=biscobisco
+#      - ELASTICSEARCH_URI=http://elasticsearch:9200
 
   redis:
     image: redis:latest
@@ -72,3 +58,36 @@ services:
     command: [ "redis-server", "--requirepass", "redis" ]
     volumes:
       - redis_data:/data
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=activities
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=secretpassword
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - '8081:8081'
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:secretpassword@mongodb:27017/activities?authSource=admin
+    depends_on:
+      - mongodb
+
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:8.5.0
+#    container_name: elasticsearch
+#    environment:
+#      - discovery.type=single-node
+#      - xpack.security.enabled=false
+#    ports:
+#      - "9200:9200"
+#      - "9300:9300"
+#    volumes:
+#      - es_data:/usr/share/elasticsearch/data

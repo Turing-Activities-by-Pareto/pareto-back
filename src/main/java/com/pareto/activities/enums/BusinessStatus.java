@@ -135,6 +135,16 @@ public enum BusinessStatus implements ExceptionKeyAndMessage {
             HttpResponseConstants.ERROR,
             "Event category and sub category not matched."
     ),
+    UNDEFINED_PARTICIPANT_CATEGORY(
+            1029,
+            HttpResponseConstants.ERROR,
+            "Undefined participant category"
+    ),
+    UNDEFINED_REQUEST_STATUS(
+            1090,
+            HttpResponseConstants.ERROR,
+            "Undefined request status"
+    ),
     EVENT_CATEGORY_NOT_FOUND(
             1028,
             HttpResponseConstants.ERROR,

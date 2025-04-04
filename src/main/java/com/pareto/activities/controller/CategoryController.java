@@ -24,9 +24,4 @@ public class CategoryController {
         return categoryService.getAllWithSubCategories();
     }
 
-    @GetMapping("/sub-categories")
-    @ResponseStatus(HttpStatus.OK)
-    public Map<String, String> subCategoriesAlongsideCategory() {
-        return categoryService.subCategoriesAlongsideCategory();
-    }
 }
