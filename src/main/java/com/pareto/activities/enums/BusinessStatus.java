@@ -5,6 +5,7 @@ import com.pareto.activities.exception.utils.ExceptionKeyAndMessage;
 import com.pareto.activities.exception.utils.HttpResponseConstants;
 
 public enum BusinessStatus implements ExceptionKeyAndMessage {
+    // TODO categorize by code later
     COMMON_SUCCESS(
             0,
             HttpResponseConstants.STATUS,
@@ -154,6 +155,11 @@ public enum BusinessStatus implements ExceptionKeyAndMessage {
             1030,
             HttpResponseConstants.ERROR,
             "File extension not found"
+    ),
+    FILE_NOT_FOUND(
+            1030,
+            HttpResponseConstants.ERROR,
+            "File not found"
     ),
     INVALID_FILE_EXTENSION(
             1031,

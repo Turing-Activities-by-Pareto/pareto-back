@@ -15,12 +15,13 @@ public interface EventMapper {
 
     EventMapper INSTANCE = Mappers.getMapper(EventMapper.class);
 
-    @Mapping(target = "categoryId", source = "category")
-    @Mapping(target = "subCategoryId", source = "subCategory")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "confirmStatus", ignore = true)
+    @Mapping(target = "fileId", ignore = true)
+    @Mapping(target = "eventRequestIds", ignore = true)
     EventEntity toEventEntity(EventRequest eventRequest);
 
-    @Mapping(target = "category", source = "categoryId")
-    @Mapping(target = "subCategory", source = "subCategoryId")
     EventCreateResponse toEventCreateResponse(EventEntity eventEntity);
 
 
