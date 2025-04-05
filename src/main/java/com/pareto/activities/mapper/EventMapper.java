@@ -22,9 +22,12 @@ public interface EventMapper {
     @Mapping(target = "eventRequestIds", ignore = true)
     EventEntity toEventEntity(EventRequest eventRequest);
 
+
+    @Mapping(target = "imageUploadUrl", ignore = true)
     EventCreateResponse toEventCreateResponse(EventEntity eventEntity);
 
 
+    @Mapping(target = "imageGetUrl", ignore = true)
     EventGetResponse toEventGetResponse(
             EventEntity eventEntity
     );
