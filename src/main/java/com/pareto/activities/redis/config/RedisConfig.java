@@ -18,6 +18,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @Configuration
@@ -50,9 +51,15 @@ public class RedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
+
+        template.setKeySerializer(new StringRedisSerializer(StandardCharsets.UTF_8));
+        template.setValueSerializer(new StringRedisSerializer(StandardCharsets.UTF_8));
+
+        template.setHashKeySerializer(new StringRedisSerializer(StandardCharsets.UTF_8));
+        template.setHashValueSerializer(new StringRedisSerializer(StandardCharsets.UTF_8));
         return template;
     }
 
@@ -73,8 +80,6 @@ public class RedisConfig {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
-
-        serializer.setObjectMapper(objectMapper);
 
         return RedisCacheConfiguration
                 .defaultCacheConfig()

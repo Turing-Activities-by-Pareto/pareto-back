@@ -31,7 +31,7 @@ import java.time.Duration;
 @Slf4j
 public class DuplicationAspect {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, String> redisTemplate;
     private final ObjectMapper objectMapper;
 
     @Pointcut("@annotation(handleDuplication)")
