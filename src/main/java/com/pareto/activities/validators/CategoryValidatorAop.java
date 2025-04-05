@@ -37,13 +37,11 @@ public class CategoryValidatorAop implements ConstraintValidator<CategoryValidat
                 field.setAccessible(true);
 
                 try {
-                    category = (String) field.get(clazzObject);
+                    subCategory = (String) field.get(clazzObject);
                 } catch (
                         Exception e) {
                     System.out.println("Error: " + e.getMessage());
                 }
-
-                break;
             }
             if (field.isAnnotationPresent(Category.class)) {
                 field.setAccessible(true);
@@ -54,8 +52,6 @@ public class CategoryValidatorAop implements ConstraintValidator<CategoryValidat
                         Exception e) {
                     System.out.println("Error: " + e.getMessage());
                 }
-
-                break;
             }
         }
 
