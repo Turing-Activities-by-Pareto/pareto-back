@@ -35,7 +35,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         String userId = request.getHeader(USER_ID_HEADER);
         String roles = request.getHeader(ROLES_HEADER);
 
-        if (userId != null) {
+        if (userId == null) {
             throw new BusinessException(
                     "User ID is missing in the request header",
                     BusinessStatus.USER_NOT_FOUND,
