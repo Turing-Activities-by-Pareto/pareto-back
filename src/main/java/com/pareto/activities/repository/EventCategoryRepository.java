@@ -8,5 +8,10 @@ import java.util.Optional;
 
 @Repository
 public interface EventCategoryRepository extends MongoRepository<EventCategoryEntity, String> {
+
+    boolean existsByName(String name);
+
+    Optional<EventCategoryEntity> findById(String id);
+
     Optional<EventCategoryEntity> findByName(String category);
 }

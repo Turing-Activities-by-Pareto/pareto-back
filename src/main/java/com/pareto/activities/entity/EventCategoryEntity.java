@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
@@ -25,9 +24,5 @@ public class EventCategoryEntity {
     private String name;
     private FileEntity file;
 
-    @DBRef
-    private Set<EventSubCategoryEntity> subCategories;
-
-    @DBRef
-    private Set<EventEntity> events;
+    private Set<String> eventIds;
 }

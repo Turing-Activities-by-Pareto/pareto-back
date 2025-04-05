@@ -38,7 +38,7 @@ public class EventRequestsController {
     @GetMapping("/{requestId}")
     @ResponseStatus(HttpStatus.OK)
     public EvReqResponse getEventRequestById(
-            @PathVariable Long requestId
+            @PathVariable String requestId
     ) {
         return eventRequestService.getEventRequestById(requestId);
     }
@@ -47,7 +47,7 @@ public class EventRequestsController {
     @ResponseStatus(HttpStatus.OK)
     @HandleDuplication
     public EvReqResponse approve(
-            @PathVariable Long requestId,
+            @PathVariable String requestId,
             @RequestBody ERequestStatus status
     ) {
         return eventRequestService.approve(requestId);
@@ -56,7 +56,7 @@ public class EventRequestsController {
     @PostMapping("/decline/{requestId}")
     @ResponseStatus(HttpStatus.OK)
     public EvReqResponse decline(
-            @PathVariable Long requestId,
+            @PathVariable String requestId,
             @RequestBody ERequestStatus status
     ) {
         return eventRequestService.decline(requestId);

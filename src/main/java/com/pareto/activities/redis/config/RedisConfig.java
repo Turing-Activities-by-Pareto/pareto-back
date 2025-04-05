@@ -73,6 +73,7 @@ public class RedisConfig {
         objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
 
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+
         serializer.setObjectMapper(objectMapper);
 
         return RedisCacheConfiguration

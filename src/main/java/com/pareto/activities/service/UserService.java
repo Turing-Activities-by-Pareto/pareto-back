@@ -23,7 +23,7 @@ public class UserService {
     private final UserMapper userMapper;
 
     @Transactional
-    public void createUser(UserCreateRequest user) {
+    public UserResponse createUser(UserCreateRequest user) {
 
         UserEntity userEntity = UserEntity
                 .builder()
@@ -39,6 +39,8 @@ public class UserService {
                 "User created: {}",
                 userEntity
         );
+
+        return userMapper.toUserResponse(userEntity);
     }
 
     public List<UserResponse> retrieveUsers() {

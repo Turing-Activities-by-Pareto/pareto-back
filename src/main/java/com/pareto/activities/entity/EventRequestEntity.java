@@ -21,8 +21,10 @@ public class EventRequestEntity {
 
     @Id
     private String id;
-    private UserEntity user;
-    private EventEntity event;
+
+    private String userId;
+    private String eventId;
+
     private ERequestStatus status;
     private LocalDateTime requestDate;
 }

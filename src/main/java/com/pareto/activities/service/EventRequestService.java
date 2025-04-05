@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class EventRequestService {
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
-    public EvReqResponse getEventRequestById(Long eventId) {
+    public EvReqResponse getEventRequestById(String eventId) {
 
         return eventRequestRepository
                 .findById(eventId)
@@ -53,8 +54,7 @@ public class EventRequestService {
 
 
     public EvReqResponse requestParticipation(
-            Long eventId,
-            Long userId
+            String eventId
     ) {
         EventEntity event = eventRepository
                 .findById(eventId)
@@ -63,16 +63,18 @@ public class EventRequestService {
                         HttpStatus.NOT_FOUND
                 ));
 
+        String userId = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal()
+                .toString()
+                ;
+
         EventRequestEntity eventRequestEntity = EventRequestEntity
                 .builder()
-                .event(event)
+                .eventId(event.getId())
                 .status(ERequestStatus.PENDING)
-                .user(userRepository
-                              .findById(userId)
-                              .orElseThrow(() -> new BusinessException(
-                                      BusinessStatus.USER_NOT_FOUND,
-                                      HttpStatus.NOT_FOUND
-                              )))
+                .userId(userId)
                 .build()
                 ;
 
@@ -85,7 +87,7 @@ public class EventRequestService {
 
     @Transactional
     public EvReqResponse decline(
-            Long requestId
+            String requestId
     ) {
         EventRequestEntity event = eventRequestRepository
                 .findById(requestId)
@@ -101,7 +103,7 @@ public class EventRequestService {
 
     @Transactional
     public EvReqResponse approve(
-            Long requestId
+            String requestId
     ) {
         EventRequestEntity event = eventRequestRepository
                 .findById(requestId)

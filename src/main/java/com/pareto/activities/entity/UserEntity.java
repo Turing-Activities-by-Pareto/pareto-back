@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.util.Set;
 
@@ -24,7 +25,6 @@ public class UserEntity {
     private String username;
     private String password;
 
-    @Field(name = "role")
     private EParticipantCategory role;
 
     private boolean isActive;
