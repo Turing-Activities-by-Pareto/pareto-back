@@ -1,5 +1,8 @@
 package com.pareto.activities.security;
 
+import com.pareto.activities.enums.BusinessStatus;
+import com.pareto.activities.exception.BusinessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +34,14 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String userId = request.getHeader(USER_ID_HEADER);
         String roles = request.getHeader(ROLES_HEADER);
+
+        if (userId != null) {
+            throw new BusinessException(
+                    "User ID is missing in the request header",
+                    BusinessStatus.USER_NOT_FOUND,
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
 
         List<SimpleGrantedAuthority> authorities = Collections.emptyList();
         if (StringUtils.hasText(roles)) {
