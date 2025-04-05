@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pareto.activities.config.Constant;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;
-import com.pareto.activities.redis.RedisRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.DigestUtils;
@@ -31,7 +31,7 @@ import java.time.Duration;
 @Slf4j
 public class DuplicationAspect {
 
-    private final RedisRepository<String, Object> redisRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
 
     @Pointcut("@annotation(handleDuplication)")
@@ -124,16 +124,19 @@ public class DuplicationAspect {
     }
 
     private boolean isDuplicate(String requestKey) {
-        return redisRepository
-                .findByKey(requestKey)
-                .isPresent();
+        redisTemplate.expire(requestKey, Duration.ofSeconds(40));
+        return redisTemplate.opsForHash().hasKey(requestKey, "exists");
+//        return redisTemplate
+//                .findByKey(requestKey)
+//                .isPresent();
     }
 
     private void cacheRequest(String requestKey) {
-        redisRepository.putByKey(
-                requestKey,
-                Constant.EMPTY_STRING,
-                Duration.ofSeconds(40)
-        );
+        redisTemplate.opsForHash().put(requestKey, "exists", "true");
+//        redisTemplate.putByKey(
+//                requestKey,
+//                Constant.EMPTY_STRING,
+//                Duration.ofSeconds(40)
+//        );
     }
 }
