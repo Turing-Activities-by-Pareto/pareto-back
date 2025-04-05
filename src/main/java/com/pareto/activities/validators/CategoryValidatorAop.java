@@ -26,7 +26,7 @@ public class CategoryValidatorAop implements ConstraintValidator<CategoryValidat
             ConstraintValidatorContext context
     ) {
 
-        boolean isValid = false;
+        boolean isValid = true;
 
         String category = null;
         String subCategory = null;
@@ -54,8 +54,6 @@ public class CategoryValidatorAop implements ConstraintValidator<CategoryValidat
                 }
             }
         }
-
-        context.disableDefaultConstraintViolation();
 
         if (category == null) {
             context.buildConstraintViolationWithTemplate("Category must not be null")
