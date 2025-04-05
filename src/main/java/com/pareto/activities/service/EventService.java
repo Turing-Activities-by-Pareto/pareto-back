@@ -19,13 +19,18 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static com.pareto.activities.config.Constant.ALLOWED_IMAGE_EXTENSIONS;
 
@@ -41,6 +46,7 @@ public class EventService {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
     private final IStorageService minioStorageService;
+    private final MongoTemplate mongoTemplate;
 
     public EventCreateResponse createEvent(
             EventRequest event
@@ -183,13 +189,53 @@ public class EventService {
 
     public Page<EventsGetResponse> getEventsPage(
             int page,
-            int size
+            int size,
+            Map<String, String> filters
     ) {
-        return eventRepository
-                .findAll(PageRequest.of(
-                        page,
-                        size
-                ))
-                .map(eventMapper::toEventsGetResponse);
+        if (filters == null || filters.isEmpty()) {
+            return eventRepository
+                    .findAll(PageRequest.of(
+                            page,
+                            size
+                    ))
+                    .map(eventMapper::toEventsGetResponse);
+        }
+
+        List<Criteria> criteriaList = filters
+                .entrySet()
+                .stream()
+                .map(entry -> {
+                    return Criteria
+                            .where(entry.getKey())
+                            .is(entry.getValue());
+                })
+                .toList()
+                ;
+
+        Criteria criteria = new Criteria().andOperator(criteriaList);
+        Query query = new Query(criteria);
+        query.with(PageRequest.of(
+                page,
+                size
+        ));
+
+        List<EventEntity> eventEntities = mongoTemplate.find(
+                query,
+                EventEntity.class
+        );
+        long total = mongoTemplate.count(
+                query,
+                EventEntity.class
+        );
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                size
+        );
+        Page<EventEntity> eventEntityPage = new PageImpl<>(
+                eventEntities,
+                pageRequest,
+                total
+        );
+        return eventEntityPage.map(eventMapper::toEventsGetResponse);
     }
 }
