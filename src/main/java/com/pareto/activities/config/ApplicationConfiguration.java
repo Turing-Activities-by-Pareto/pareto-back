@@ -31,7 +31,6 @@ public class ApplicationConfiguration {
                         .withColonInTimeZone(true)
         );
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
         objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
     }

@@ -1,7 +1,6 @@
 package com.pareto.activities.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pareto.activities.config.Constant;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -124,19 +123,25 @@ public class DuplicationAspect {
     }
 
     private boolean isDuplicate(String requestKey) {
-        redisTemplate.expire(requestKey, Duration.ofSeconds(40));
-        return redisTemplate.opsForHash().hasKey(requestKey, "exists");
-//        return redisTemplate
-//                .findByKey(requestKey)
-//                .isPresent();
+        redisTemplate.expire(
+                requestKey,
+                Duration.ofSeconds(40)
+        );
+        return redisTemplate
+                .opsForHash()
+                .hasKey(
+                        requestKey,
+                        "exists"
+                );
     }
 
     private void cacheRequest(String requestKey) {
-        redisTemplate.opsForHash().put(requestKey, "exists", "true");
-//        redisTemplate.putByKey(
-//                requestKey,
-//                Constant.EMPTY_STRING,
-//                Duration.ofSeconds(40)
-//        );
+        redisTemplate
+                .opsForHash()
+                .put(
+                        requestKey,
+                        "exists",
+                        "true"
+                );
     }
 }

@@ -13,15 +13,6 @@ public enum ERequestStatus {
     DECLINED,
     ;
 
-    public String fromName() {
-        return name().toUpperCase();
-    }
-
-    @JsonValue
-    public String getDisplayName() {
-        return name().toUpperCase();
-    }
-
     @JsonValue
     public static String toValue(ERequestStatus status) {
         return status.name();
@@ -42,5 +33,14 @@ public enum ERequestStatus {
                                 HttpStatus.BAD_REQUEST
                         )
                 );
+    }
+
+    public String fromName() {
+        return name().toUpperCase();
+    }
+
+    @JsonValue
+    public String getDisplayName() {
+        return name().toUpperCase();
     }
 }

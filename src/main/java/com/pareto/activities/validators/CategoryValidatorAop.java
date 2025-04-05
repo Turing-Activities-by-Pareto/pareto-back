@@ -56,30 +56,38 @@ public class CategoryValidatorAop implements ConstraintValidator<CategoryValidat
         }
 
         if (category == null) {
-            context.buildConstraintViolationWithTemplate("Category must not be null")
-                   .addPropertyNode("category")
-                   .addConstraintViolation();
+            context
+                    .buildConstraintViolationWithTemplate("Category must not be null")
+                    .addPropertyNode("category")
+                    .addConstraintViolation()
+            ;
             isValid = false;
         }
 
         if (subCategory == null) {
-            context.buildConstraintViolationWithTemplate("SubCategory must not be null")
-                   .addPropertyNode("subCategory")
-                   .addConstraintViolation();
+            context
+                    .buildConstraintViolationWithTemplate("SubCategory must not be null")
+                    .addPropertyNode("subCategory")
+                    .addConstraintViolation()
+            ;
             isValid = false;
         }
 
         if (category != null && !categoryRepository.existsByName(category)) {
-            context.buildConstraintViolationWithTemplate("Category '" + category + "' does not exist")
-                   .addPropertyNode("category")
-                   .addConstraintViolation();
+            context
+                    .buildConstraintViolationWithTemplate("Category '" + category + "' does not exist")
+                    .addPropertyNode("category")
+                    .addConstraintViolation()
+            ;
             isValid = false;
         }
 
         if (subCategory != null && !subCategoryRepository.existsByName(subCategory)) {
-            context.buildConstraintViolationWithTemplate("SubCategory '" + subCategory + "' does not exist")
-                   .addPropertyNode("subCategory")
-                   .addConstraintViolation();
+            context
+                    .buildConstraintViolationWithTemplate("SubCategory '" + subCategory + "' does not exist")
+                    .addPropertyNode("subCategory")
+                    .addConstraintViolation()
+            ;
             isValid = false;
         }
 

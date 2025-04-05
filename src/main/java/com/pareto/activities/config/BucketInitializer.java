@@ -24,18 +24,19 @@ public class BucketInitializer {
         try {
             for (String bucket : defaultBuckets) {
                 if (!minioClient.bucketExists(BucketExistsArgs
-                        .builder()
-                        .bucket(bucket)
-                        .build())) {
+                                                      .builder()
+                                                      .bucket(bucket)
+                                                      .build())) {
                     minioClient.makeBucket(MakeBucketArgs
-                            .builder()
-                            .bucket(bucket)
-                            .build());
+                                                   .builder()
+                                                   .bucket(bucket)
+                                                   .build());
                     log.info(
                             "Bucket '{}' created successfully.",
                             bucket
                     );
-                } else {
+                }
+                else {
                     log.info(
                             "Bucket '{}' already exists.",
                             bucket

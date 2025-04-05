@@ -592,13 +592,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
                 TechExceptionCodes.METHOD_ARGUMENT_NOT_VALID.getExceptionCode(),
                 TechExceptionCodes.METHOD_ARGUMENT_NOT_VALID.getExceptionMessage(),
 
-                ex.getFieldErrors().stream().map(
-                        fieldError -> new FieldError(
-                                fieldError.getField(),
-                                fieldError.getDefaultMessage(),
-                                fieldError.getRejectedValue()
+                ex
+                        .getFieldErrors()
+                        .stream()
+                        .map(
+                                fieldError -> new FieldError(
+                                        fieldError.getField(),
+                                        fieldError.getDefaultMessage(),
+                                        fieldError.getRejectedValue()
+                                )
                         )
-                ).collect(Collectors.toList())
+                        .collect(Collectors.toList())
         );
     }
 
