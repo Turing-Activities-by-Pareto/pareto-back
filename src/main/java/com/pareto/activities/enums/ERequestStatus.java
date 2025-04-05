@@ -17,7 +17,8 @@ public enum ERequestStatus {
         return name().toUpperCase();
     }
 
-    public String toDisplayName() {
+    @JsonValue
+    public String getDisplayName() {
         return name().toUpperCase();
     }
 
