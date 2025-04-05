@@ -29,8 +29,8 @@ public class EventEntity {
     private String title;
     private String description;
 
-    private String categoryId;
-    private String subCategoryId;
+    private String category;
+    private String subCategory;
 
     private String place;
     private LocalDateTime deadline;
@@ -43,5 +43,5 @@ public class EventEntity {
 
     private Set<String> eventRequestIds;
 
-    private Set<EParticipantCategory> participantCategoryIds;
+    private Set<EParticipantCategory> participantCategories;
 }

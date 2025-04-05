@@ -13,6 +13,10 @@ public enum ERequestStatus {
     DECLINED,
     ;
 
+    public String fromName() {
+        return name().toUpperCase();
+    }
+
     public String toDisplayName() {
         return name().toUpperCase();
     }

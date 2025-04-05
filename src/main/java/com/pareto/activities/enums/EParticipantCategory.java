@@ -19,6 +19,10 @@ public enum EParticipantCategory {
     GUEST,
     ;
 
+    public String fromName() {
+        return name().toUpperCase();
+    }
+
     @JsonValue
     public String getDisplayName() {
         return name().toUpperCase();

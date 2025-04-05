@@ -26,6 +26,10 @@ public class ApplicationConfiguration {
                 DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
                 false
         );
+        objectMapper.setDateFormat(
+                new com.fasterxml.jackson.databind.util.StdDateFormat()
+                        .withColonInTimeZone(true)
+        );
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 //        objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
         objectMapper.registerModule(new JavaTimeModule());

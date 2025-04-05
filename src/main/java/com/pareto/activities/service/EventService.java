@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,24 +45,48 @@ public class EventService {
     public EventCreateResponse createEvent(
             EventRequest event
     ) {
-        if (!userRepository.existsById(event.getUserId())) {
-            throw new BusinessException(BusinessStatus.USER_NOT_FOUND, HttpStatus.NOT_FOUND);
+        SecurityContext context = SecurityContextHolder.getContext();
+        if (!userRepository.existsById(context
+                                               .getAuthentication()
+                                               .getPrincipal()
+                                               .toString())
+        ) {
+            throw new BusinessException(
+                    ". with user Id %s .".formatted(context
+                                                            .getAuthentication()
+                                                            .getPrincipal()
+                                                            .toString()),
+                    BusinessStatus.USER_NOT_FOUND,
+                    HttpStatus.NOT_FOUND
+            );
         }
 
         if (!eventCategoryRepository.existsByName(event.getCategory())) {
-            throw new BusinessException(BusinessStatus.EVENT_CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new BusinessException(
+                    BusinessStatus.EVENT_CATEGORY_NOT_FOUND,
+                    HttpStatus.NOT_FOUND
+            );
         }
 
         if (!eventSubCategoryRepository.existsByName(event.getSubCategory())) {
-            throw new BusinessException(BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new BusinessException(
+                    BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND,
+                    HttpStatus.NOT_FOUND
+            );
         }
 
         String fileExtension = event.getFileExtension();
         if (fileExtension == null || fileExtension.isBlank()) {
-            throw new BusinessException(BusinessStatus.FILE_EXTENSION_NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new BusinessException(
+                    BusinessStatus.FILE_EXTENSION_NOT_FOUND,
+                    HttpStatus.NOT_FOUND
+            );
         }
         if (!ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension.toLowerCase())) {
-            throw new BusinessException(BusinessStatus.INVALID_FILE_EXTENSION, HttpStatus.BAD_REQUEST);
+            throw new BusinessException(
+                    BusinessStatus.INVALID_FILE_EXTENSION,
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         EventEntity eventEntity = eventMapper.toEventEntity(event);
@@ -72,12 +98,11 @@ public class EventService {
                 Method.PUT
         );
 
-        FileEntity savedFile = fileRepository.save(
-                FileEntity.builder()
-                        .bucket("event-background")
-                        .object(fileNameWithExtension)
-                        .build()
-        );
+        FileEntity savedFile = fileRepository.save(FileEntity
+                                                           .builder()
+                                                           .bucket("event-background")
+                                                           .object(fileNameWithExtension)
+                                                           .build());
 
         eventEntity.setConfirmStatus(EConfirmStatus.PENDING);
         eventEntity.setFileId(savedFile.getId());
@@ -88,81 +113,83 @@ public class EventService {
         return eventCreateResponse;
 
     }
-    //TODO: integrate some methods with controller
-//    @Transactional
-//    public EventGetResponse getEventById(
-//            Long eventId
-//    ) {
-//        return eventMapper.toEventGetResponse(
-//                eventRepository
-//                        .findById(eventId)
-//                        .orElseThrow(() -> new BusinessException(
-//                                BusinessStatus.EVENT_NOT_FOUND,
-//                                HttpStatus.NOT_FOUND
-//                        ))
-//        );
-//    }
-//
-//    public List<EventsGetResponse> getEvents() {
-//        return eventRepository
-//                .findAll()
-//                .stream()
-//                .map(eventMapper::toEventsGetResponse)
-//                .toList();
-//    }
-//
-//    public String getObjectGetUrl(
-//            Long eventId
-//    ) {
-//        return getObjectUrlbyMethod(
-//                eventId,
-//                Method.GET
-//        );
-//    }
-//
-//    public String getObjectPutUrl(
-//            Long eventId
-//    ) {
-//        return getObjectUrlbyMethod(
-//                eventId,
-//                Method.PUT
-//        );
-//    }
-//
-//    private String getObjectUrlbyMethod(
-//            Long eventId,
-//            Method method
-//    ) {
-//        FileEntity fileEntity = eventRepository
-//                .findById(eventId)
-//                .orElseThrow(() -> new BusinessException(
-//                        BusinessStatus.EVENT_NOT_FOUND,
-//                        HttpStatus.NOT_FOUND
-//                ))
-//                .getFile()
-//                ;
-//
-//        String objectName = fileEntity.getObject();
-//        String bucket = fileEntity.getBucket();
-//
-//        return minioStorageService.getObjectUrl(
-//                bucket,
-//                objectName,
-//                method
-//        );
-//    }
-//
-//    public Page<EventsGetResponse> getEventsPage(
-//            int page,
-//            int size
-//    ) {
-//        return eventRepository
-//                .findAll(
-//                        PageRequest.of(
-//                                page,
-//                                size
-//                        )
-//                )
-//                .map(eventMapper::toEventsGetResponse);
-//    }
+
+    @Transactional
+    public EventGetResponse getEventById(
+            String eventId
+    ) {
+        return eventMapper.toEventGetResponse(eventRepository
+                                                      .findById(eventId)
+                                                      .orElseThrow(() -> new BusinessException(
+                                                              BusinessStatus.EVENT_NOT_FOUND,
+                                                              HttpStatus.NOT_FOUND
+                                                      )));
+    }
+
+    public List<EventsGetResponse> getEvents() {
+        return eventRepository
+                .findAll()
+                .stream()
+                .map(eventMapper::toEventsGetResponse)
+                .toList();
+    }
+
+    public String getObjectGetUrl(
+            String eventId
+    ) {
+        return getObjectUrlbyMethod(
+                eventId,
+                Method.GET
+        );
+    }
+
+    public String getObjectPutUrl(
+            String eventId
+    ) {
+        return getObjectUrlbyMethod(
+                eventId,
+                Method.PUT
+        );
+    }
+
+    private String getObjectUrlbyMethod(
+            String eventId,
+            Method method
+    ) {
+
+        EventEntity event = eventRepository
+                .findById(eventId)
+                .orElseThrow(() -> new BusinessException(
+                        BusinessStatus.EVENT_NOT_FOUND,
+                        HttpStatus.NOT_FOUND
+                ));
+
+        FileEntity fileEntity = fileRepository
+                .findById(event.getFileId())
+                .orElseThrow(() -> new BusinessException(
+                        BusinessStatus.FILE_NOT_FOUND,
+                        HttpStatus.NOT_FOUND
+                ));
+
+        String objectName = fileEntity.getObject();
+        String bucket = fileEntity.getBucket();
+
+        return minioStorageService.getObjectUrl(
+                bucket,
+                objectName,
+                method
+        );
+    }
+
+    public Page<EventsGetResponse> getEventsPage(
+            int page,
+            int size
+    ) {
+        return eventRepository
+                .findAll(PageRequest.of(
+                        page,
+                        size
+                ))
+                .map(eventMapper::toEventsGetResponse);
+    }
 }
