@@ -1,6 +1,5 @@
 package com.pareto.activities.service;
 
-import com.google.common.base.CaseFormat;
 import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventGetResponse;
 import com.pareto.activities.DTO.EventRequest;
@@ -15,6 +14,7 @@ import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.EventSubCategoryRepository;
 import com.pareto.activities.repository.UserRepository;
+import com.pareto.activities.util.Utils;
 import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +32,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
-import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.pareto.activities.config.Constants.ALLOWED_IMAGE_EXTENSIONS;
+import static com.pareto.activities.util.Utils.toCamelCase;
 
 @Service
 @RequiredArgsConstructor
@@ -132,12 +131,14 @@ public class EventService {
     public EventGetResponse getEventById(
             String eventId
     ) {
-        return eventMapper.toEventGetResponse(eventRepository
-                                                      .findById(eventId)
-                                                      .orElseThrow(() -> new BusinessException(
-                                                              BusinessStatus.EVENT_NOT_FOUND,
-                                                              HttpStatus.NOT_FOUND
-                                                      )));
+        return eventMapper.toEventGetResponse(
+                eventRepository
+                        .findById(eventId)
+                        .orElseThrow(() -> new BusinessException(
+                                BusinessStatus.EVENT_NOT_FOUND,
+                                HttpStatus.NOT_FOUND
+                        ))
+        );
     }
 
     public List<EventsGetResponse> getEvents() {
@@ -199,7 +200,7 @@ public class EventService {
             MultiValueMap<String, String> filters
     ) {
         int size = 10;
-        int page = 1;
+        int page = 0;
 
         // @formatting off
         if (filters != null && !filters.isEmpty() && filters.containsKey("size") && !filters
@@ -233,146 +234,110 @@ public class EventService {
         filters.remove("size");
         filters.remove("page");
 
-        Set<String> localDateTimeKeys = Arrays
-                .stream(EventEntity.class.getDeclaredFields())
-                .filter(field -> field.getType() == LocalDateTime.class)
-                .map(Field::getName)
-                .map(camel -> CaseFormat.LOWER_CAMEL.to(
-                        CaseFormat.LOWER_HYPHEN,
-                        camel
-                ))
-                .collect(Collectors.toSet())
-                ;
+        Set<String> localDateTimeKeys = Utils.getClassFieldNames(
+                EventEntity.class,
+                LocalDateTime.class,
+                Utils.NamingConventionFormattingStrategy.CAMEL_TO_KEBAB
+        );
 
-        Set<String> listKeys = Arrays
-                .stream(EventEntity.class.getDeclaredFields())
-                .filter(field -> Collection.class.isAssignableFrom(field.getType()))
-                .map(Field::getName)
-                .map(camel -> CaseFormat.LOWER_CAMEL.to(
-                        CaseFormat.LOWER_HYPHEN,
-                        camel
-                ))
-                .filter(name -> !localDateTimeKeys.contains(name))
-                .collect(Collectors.toSet())
-                ;
+        Set<String> collectionKeys = Utils.getClassFieldNames(
+                EventEntity.class,
+                Collection.class,
+                Utils.NamingConventionFormattingStrategy.CAMEL_TO_KEBAB
+        );
 
-        Set<String> equalityChekcKeys = Arrays
-                .stream(EventEntity.class.getDeclaredFields())
-                .filter(field -> !Collection.class.isAssignableFrom(field.getType()))
-                .map(Field::getName)
-                .map(camel -> CaseFormat.LOWER_CAMEL.to(
-                        CaseFormat.LOWER_HYPHEN,
-                        camel
-                ))
-                .filter(name -> !localDateTimeKeys.contains(name))
-                .collect(Collectors.toSet())
-                ;
+        Set<String> stringKeys = Utils.getClassFieldNames(
+                EventEntity.class,
+                String.class,
+                Utils.NamingConventionFormattingStrategy.CAMEL_TO_KEBAB
+        );
+
 
         log.info(
                 "LocalDateTime fields {}",
                 localDateTimeKeys
         );
         log.info(
-                "other Exact match fields {}",
-                equalityChekcKeys
+                "String match fields {}",
+                stringKeys
         );
         log.info(
-                "List keys fields: {}",
-                listKeys
+                "Collection keys fields: {}",
+                collectionKeys
         );
 
-        Criteria[] criteriaList = filters
+        Criteria[] allCriterias = filters
                 .entrySet()
                 .stream()
-                .filter(entry -> equalityChekcKeys.contains(entry.getKey()))
-                .map(entry -> new Criteria()
-                        .orOperator(
-                                entry
-                                        .getValue()
-                                        .stream()
-                                        .map(value -> Criteria
-                                                .where(CaseFormat.LOWER_HYPHEN.to(
-                                                        CaseFormat.LOWER_CAMEL,
-                                                        entry.getKey()
-                                                ))
-                                                .is(value)
-                                        )
-                                        .toList()
-                        )
+                .map(entry -> {
+                         if (stringKeys.contains(entry.getKey())) {
+                             return Criteria
+                                     .where(toCamelCase(entry.getKey()))
+                                     .is(entry
+                                                 .getValue()
+                                                 .getFirst()
+                                     );
+                         }
+
+                         if (collectionKeys.contains(entry.getKey())) {
+                             return Criteria
+                                     .where(toCamelCase(entry.getKey()))
+                                     .all(entry.getValue());
+                         }
+
+                         return null;
+                     }
                 )
+                .filter(Objects::nonNull)
                 .toArray(Criteria[]::new)
                 ;
 
-        Criteria[] listCheckCriteriaList = filters
-                .entrySet()
-                .stream()
-                .filter(entry -> listKeys.contains(entry.getKey()))
-                .map(value -> Criteria
-                        .where(CaseFormat.LOWER_HYPHEN.to(
-                                CaseFormat.LOWER_CAMEL,
-                                value.getKey()
-                        ))
-                        .in(value.getValue())
-                )
-                .toArray(Criteria[]::new)
-                ;
-        ;
-
-        Criteria criteria = null;
-
-        if (criteriaList.length == 0 && listCheckCriteriaList.length == 0) {
-            criteria = new Criteria();
+        Criteria criteria;
+        if (allCriterias.length == 0) {
+            criteria = Criteria
+                    .where("title")
+                    .exists(true);
         }
-
-        if (criteriaList.length != 0 && listCheckCriteriaList.length == 0) {
-            criteria = new Criteria().orOperator(
-                    new Criteria().orOperator(criteriaList)
-            );
-        }
-
-        if (criteriaList.length == 0 && listCheckCriteriaList.length != 0) {
-            criteria = new Criteria().orOperator(
-                    listCheckCriteriaList
-            );
-        }
-
-        if (criteriaList.length != 0 && listCheckCriteriaList.length != 0) {
-            criteria = new Criteria().orOperator(
-                    new Criteria().orOperator(criteriaList),
-                    new Criteria().andOperator(listCheckCriteriaList)
-            );
+        else {
+            criteria = new Criteria().andOperator(allCriterias);
         }
 
         log.info(
-                "this is criteria: {}",
+                "all criterias should look like:\n{}",
                 criteria
                         .getCriteriaObject()
-                        .toJson(JsonWriterSettings
+                        .toJson(
+                                JsonWriterSettings
                                         .builder()
                                         .indent(true)
-                                        .build())
+                                        .build()
+
+                        )
         );
 
         PageRequest pageRequest = PageRequest.of(
                 page,
                 size
         );
-        Query query = new Query(criteria).with(pageRequest);
+
+        Query queryWithPage = new Query(criteria).with(pageRequest);
+
+        long total = mongoTemplate.count(
+                new Query(criteria),
+                EventEntity.class
+        );
 
         List<EventEntity> eventEntities = mongoTemplate.find(
-                query,
-                EventEntity.class
-        );
-        long total = mongoTemplate.count(
-                query,
+                queryWithPage,
                 EventEntity.class
         );
 
-        Page<EventEntity> eventEntityPage = new PageImpl<>(
+        Page<EventEntity> pageResult = new PageImpl<>(
                 eventEntities,
                 pageRequest,
                 total
         );
-        return eventEntityPage.map(eventMapper::toEventsGetResponse);
+
+        return pageResult.map(eventMapper::toEventsGetResponse);
     }
 }
