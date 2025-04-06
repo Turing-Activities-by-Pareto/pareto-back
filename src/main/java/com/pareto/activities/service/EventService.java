@@ -14,12 +14,10 @@ import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.EventSubCategoryRepository;
 import com.pareto.activities.repository.UserRepository;
-import com.pareto.activities.util.Utils;
 import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bson.json.JsonWriterSettings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -32,14 +30,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 import static com.pareto.activities.config.Constants.ALLOWED_IMAGE_EXTENSIONS;
-import static com.pareto.activities.util.Utils.toCamelCase;
 
 @Service
 @RequiredArgsConstructor
@@ -54,21 +47,24 @@ public class EventService {
     private final FileRepository fileRepository;
     private final IStorageService minioStorageService;
     private final MongoTemplate mongoTemplate;
+    private final CriteriaService criteriaService;
 
     public EventCreateResponse createEvent(
             EventRequest event
     ) {
         SecurityContext context = SecurityContextHolder.getContext();
-        if (!userRepository.existsById(context
-                                               .getAuthentication()
-                                               .getPrincipal()
-                                               .toString())
+        if (!userRepository.existsById(
+                context
+                        .getAuthentication()
+                        .getPrincipal()
+                        .toString())
         ) {
             throw new BusinessException(
-                    ". with user Id %s .".formatted(context
-                                                            .getAuthentication()
-                                                            .getPrincipal()
-                                                            .toString()),
+                    ". with user Id %s .".formatted(
+                            context
+                                    .getAuthentication()
+                                    .getPrincipal()
+                                    .toString()),
                     BusinessStatus.USER_NOT_FOUND,
                     HttpStatus.NOT_FOUND
             );
@@ -111,11 +107,13 @@ public class EventService {
                 Method.PUT
         );
 
-        FileEntity savedFile = fileRepository.save(FileEntity
-                                                           .builder()
-                                                           .bucket("event-background")
-                                                           .object(fileNameWithExtension)
-                                                           .build());
+        FileEntity savedFile = fileRepository.save(
+                FileEntity
+                        .builder()
+                        .bucket("event-background")
+                        .object(fileNameWithExtension)
+                        .build()
+        );
 
         eventEntity.setConfirmStatus(EConfirmStatus.PENDING);
         eventEntity.setFileId(savedFile.getId());
@@ -210,90 +208,15 @@ public class EventService {
         filters.remove("size");
         filters.remove("page");
 
-        Set<String> localDateTimeKeys = Utils.getClassFieldNames(
-                EventEntity.class,
-                LocalDateTime.class,
-                Utils.NamingConventionFormattingStrategy.CAMEL_TO_KEBAB
-        );
-
-        Set<String> collectionKeys = Utils.getClassFieldNames(
-                EventEntity.class,
-                Collection.class,
-                Utils.NamingConventionFormattingStrategy.CAMEL_TO_KEBAB
-        );
-
-        Set<String> stringKeys = Utils.getClassFieldNames(
-                EventEntity.class,
-                String.class,
-                Utils.NamingConventionFormattingStrategy.CAMEL_TO_KEBAB
-        );
-
-
-        log.info(
-                "LocalDateTime fields {}",
-                localDateTimeKeys
-        );
-        log.info(
-                "String match fields {}",
-                stringKeys
-        );
-        log.info(
-                "Collection keys fields: {}",
-                collectionKeys
-        );
-
-        Criteria[] allCriterias = filters
-                .entrySet()
-                .stream()
-                .map(entry -> {
-                         if (stringKeys.contains(entry.getKey())) {
-                             return Criteria
-                                     .where(toCamelCase(entry.getKey()))
-                                     .is(entry
-                                                 .getValue()
-                                                 .getFirst()
-                                     );
-                         }
-
-                         if (collectionKeys.contains(entry.getKey())) {
-                             return Criteria
-                                     .where(toCamelCase(entry.getKey()))
-                                     .all(entry.getValue());
-                         }
-
-                         return null;
-                     }
-                )
-                .filter(Objects::nonNull)
-                .toArray(Criteria[]::new)
-                ;
-
-        Criteria criteria;
-        if (allCriterias.length == 0) {
-            criteria = Criteria
-                    .where("title")
-                    .exists(true);
-        }
-        else {
-            criteria = new Criteria().andOperator(allCriterias);
-        }
-
-        log.info(
-                "all criterias should look like:\n{}",
-                criteria
-                        .getCriteriaObject()
-                        .toJson(
-                                JsonWriterSettings
-                                        .builder()
-                                        .indent(true)
-                                        .build()
-
-                        )
-        );
 
         PageRequest pageRequest = PageRequest.of(
                 page,
                 size
+        );
+
+        Criteria criteria = criteriaService.generateCriterias(
+                EventEntity.class,
+                filters
         );
 
         Query queryWithPage = new Query(criteria).with(pageRequest);
