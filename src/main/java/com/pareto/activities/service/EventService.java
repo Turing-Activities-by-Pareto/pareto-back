@@ -18,6 +18,7 @@ import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.json.JsonWriterSettings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -28,11 +29,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.pareto.activities.config.Constant.ALLOWED_IMAGE_EXTENSIONS;
+import static com.pareto.activities.config.Constants.ALLOWED_IMAGE_EXTENSIONS;
 
 @Service
 @RequiredArgsConstructor
@@ -188,36 +191,80 @@ public class EventService {
     }
 
     public Page<EventsGetResponse> getEventsPage(
-            int page,
-            int size,
-            Map<String, String> filters
+            MultiValueMap<String, String> filters
     ) {
-        if (filters == null || filters.isEmpty()) {
-            return eventRepository
-                    .findAll(PageRequest.of(
-                            page,
-                            size
-                    ))
-                    .map(eventMapper::toEventsGetResponse);
+
+        int size = 10;
+        int page = 1;
+
+        // @formatting off
+        if (filters != null && !filters.isEmpty() && filters.containsKey("size") && !filters.get("size").isEmpty()
+        ) {
+            size = Integer.parseInt(
+                    filters
+                            .get("size")
+                            .getFirst()
+            );
         }
 
-        List<Criteria> criteriaList = filters
+        if (filters != null && !filters.isEmpty() && filters.containsKey("page") && !filters.get("page").isEmpty() ) {
+            page = Integer.parseInt(
+                    filters
+                            .get("page")
+                            .getFirst()
+            );
+        }
+        // @formatting on
+
+        log.info(
+                "pageable size: {}, page: {}",
+                size,
+                page
+        );
+
+        filters.remove("size");
+        filters.remove("page");
+
+        ArrayList<Criteria> criteriaList = filters
                 .entrySet()
                 .stream()
-                .map(entry -> {
-                    return Criteria
-                            .where(entry.getKey())
-                            .is(entry.getValue());
-                })
-                .toList()
+                .map(entry -> new Criteria()
+                        .orOperator(
+                                entry
+                                        .getValue()
+                                        .stream()
+                                        .map(value -> Criteria
+                                                .where(entry.getKey())
+                                                .is(value)
+                                        )
+                                        .toList()
+                        )
+                )
+                .collect(Collectors.toCollection(ArrayList::new))
                 ;
+        ;
 
-        Criteria criteria = new Criteria().andOperator(criteriaList);
-        Query query = new Query(criteria);
-        query.with(PageRequest.of(
+        Criteria criteria = new Criteria().andOperator(
+                criteriaList.isEmpty()
+                        ? List.of(new Criteria())
+                        : criteriaList
+        );
+
+        log.info(
+                "this is criteria: {}",
+                criteria
+                        .getCriteriaObject()
+                        .toJson(JsonWriterSettings
+                                        .builder()
+                                        .indent(true)
+                                        .build())
+        );
+
+        PageRequest pageRequest = PageRequest.of(
                 page,
                 size
-        ));
+        );
+        Query query = new Query(criteria).with(pageRequest);
 
         List<EventEntity> eventEntities = mongoTemplate.find(
                 query,
@@ -227,10 +274,7 @@ public class EventService {
                 query,
                 EventEntity.class
         );
-        PageRequest pageRequest = PageRequest.of(
-                page,
-                size
-        );
+
         Page<EventEntity> eventEntityPage = new PageImpl<>(
                 eventEntities,
                 pageRequest,
