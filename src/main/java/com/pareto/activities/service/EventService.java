@@ -197,34 +197,10 @@ public class EventService {
     }
 
     public Page<EventsGetResponse> getEventsPage(
+            int page,
+            int size,
             MultiValueMap<String, String> filters
     ) {
-        int size = 10;
-        int page = 0;
-
-        // @formatting off
-        if (filters != null && !filters.isEmpty() && filters.containsKey("size") && !filters
-                .get("size")
-                .isEmpty()
-        ) {
-            size = Integer.parseInt(
-                    filters
-                            .get("size")
-                            .getFirst()
-            );
-        }
-
-        if (filters != null && !filters.isEmpty() && filters.containsKey("page") && !filters
-                .get("page")
-                .isEmpty()) {
-            page = Integer.parseInt(
-                    filters
-                            .get("page")
-                            .getFirst()
-            );
-        }
-        // @formatting on
-
         log.info(
                 "pageable size: {}, page: {}",
                 size,

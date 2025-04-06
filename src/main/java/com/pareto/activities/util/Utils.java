@@ -100,14 +100,14 @@ public class Utils {
     }
     // @formatter:on
 
-    public static String toCamelCase(String s) {
+    public static String toKebabCase(String s) {
         return CaseFormat.UPPER_CAMEL.to(
                 CaseFormat.LOWER_HYPHEN,
                 s
         );
     }
 
-    public static String toKebabCase(String s) {
+    public static String toCamelCase(String s) {
         return CaseFormat.LOWER_HYPHEN.to(
                 CaseFormat.UPPER_CAMEL,
                 s

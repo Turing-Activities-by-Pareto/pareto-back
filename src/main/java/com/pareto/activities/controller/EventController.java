@@ -50,6 +50,8 @@ public class EventController {
             @RequestParam(required = false) MultiValueMap<String, String> filters
     ) {
         return eventService.getEventsPage(
+                page,
+                size,
                 filters
         );
     }
