@@ -1,5 +1,6 @@
 package com.pareto.activities.service;
 
+import com.google.common.base.CaseFormat;
 import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventGetResponse;
 import com.pareto.activities.DTO.EventRequest;
@@ -31,8 +32,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
-import java.util.ArrayList;
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.pareto.activities.config.Constants.ALLOWED_IMAGE_EXTENSIONS;
@@ -193,12 +198,13 @@ public class EventService {
     public Page<EventsGetResponse> getEventsPage(
             MultiValueMap<String, String> filters
     ) {
-
         int size = 10;
         int page = 1;
 
         // @formatting off
-        if (filters != null && !filters.isEmpty() && filters.containsKey("size") && !filters.get("size").isEmpty()
+        if (filters != null && !filters.isEmpty() && filters.containsKey("size") && !filters
+                .get("size")
+                .isEmpty()
         ) {
             size = Integer.parseInt(
                     filters
@@ -207,7 +213,9 @@ public class EventService {
             );
         }
 
-        if (filters != null && !filters.isEmpty() && filters.containsKey("page") && !filters.get("page").isEmpty() ) {
+        if (filters != null && !filters.isEmpty() && filters.containsKey("page") && !filters
+                .get("page")
+                .isEmpty()) {
             page = Integer.parseInt(
                     filters
                             .get("page")
@@ -225,30 +233,115 @@ public class EventService {
         filters.remove("size");
         filters.remove("page");
 
-        ArrayList<Criteria> criteriaList = filters
+        Set<String> localDateTimeKeys = Arrays
+                .stream(EventEntity.class.getDeclaredFields())
+                .filter(field -> field.getType() == LocalDateTime.class)
+                .map(Field::getName)
+                .map(camel -> CaseFormat.LOWER_CAMEL.to(
+                        CaseFormat.LOWER_HYPHEN,
+                        camel
+                ))
+                .collect(Collectors.toSet())
+                ;
+
+        Set<String> listKeys = Arrays
+                .stream(EventEntity.class.getDeclaredFields())
+                .filter(field -> Collection.class.isAssignableFrom(field.getType()))
+                .map(Field::getName)
+                .map(camel -> CaseFormat.LOWER_CAMEL.to(
+                        CaseFormat.LOWER_HYPHEN,
+                        camel
+                ))
+                .filter(name -> !localDateTimeKeys.contains(name))
+                .collect(Collectors.toSet())
+                ;
+
+        Set<String> equalityChekcKeys = Arrays
+                .stream(EventEntity.class.getDeclaredFields())
+                .filter(field -> !Collection.class.isAssignableFrom(field.getType()))
+                .map(Field::getName)
+                .map(camel -> CaseFormat.LOWER_CAMEL.to(
+                        CaseFormat.LOWER_HYPHEN,
+                        camel
+                ))
+                .filter(name -> !localDateTimeKeys.contains(name))
+                .collect(Collectors.toSet())
+                ;
+
+        log.info(
+                "LocalDateTime fields {}",
+                localDateTimeKeys
+        );
+        log.info(
+                "other Exact match fields {}",
+                equalityChekcKeys
+        );
+        log.info(
+                "List keys fields: {}",
+                listKeys
+        );
+
+        Criteria[] criteriaList = filters
                 .entrySet()
                 .stream()
+                .filter(entry -> equalityChekcKeys.contains(entry.getKey()))
                 .map(entry -> new Criteria()
                         .orOperator(
                                 entry
                                         .getValue()
                                         .stream()
                                         .map(value -> Criteria
-                                                .where(entry.getKey())
+                                                .where(CaseFormat.LOWER_HYPHEN.to(
+                                                        CaseFormat.LOWER_CAMEL,
+                                                        entry.getKey()
+                                                ))
                                                 .is(value)
                                         )
                                         .toList()
                         )
                 )
-                .collect(Collectors.toCollection(ArrayList::new))
+                .toArray(Criteria[]::new)
+                ;
+
+        Criteria[] listCheckCriteriaList = filters
+                .entrySet()
+                .stream()
+                .filter(entry -> listKeys.contains(entry.getKey()))
+                .map(value -> Criteria
+                        .where(CaseFormat.LOWER_HYPHEN.to(
+                                CaseFormat.LOWER_CAMEL,
+                                value.getKey()
+                        ))
+                        .in(value.getValue())
+                )
+                .toArray(Criteria[]::new)
                 ;
         ;
 
-        Criteria criteria = new Criteria().andOperator(
-                criteriaList.isEmpty()
-                        ? List.of(new Criteria())
-                        : criteriaList
-        );
+        Criteria criteria = null;
+
+        if (criteriaList.length == 0 && listCheckCriteriaList.length == 0) {
+            criteria = new Criteria();
+        }
+
+        if (criteriaList.length != 0 && listCheckCriteriaList.length == 0) {
+            criteria = new Criteria().orOperator(
+                    new Criteria().orOperator(criteriaList)
+            );
+        }
+
+        if (criteriaList.length == 0 && listCheckCriteriaList.length != 0) {
+            criteria = new Criteria().orOperator(
+                    listCheckCriteriaList
+            );
+        }
+
+        if (criteriaList.length != 0 && listCheckCriteriaList.length != 0) {
+            criteria = new Criteria().orOperator(
+                    new Criteria().orOperator(criteriaList),
+                    new Criteria().andOperator(listCheckCriteriaList)
+            );
+        }
 
         log.info(
                 "this is criteria: {}",
