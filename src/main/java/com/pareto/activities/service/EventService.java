@@ -205,10 +205,6 @@ public class EventService {
                 page
         );
 
-        filters.remove("size");
-        filters.remove("page");
-
-
         PageRequest pageRequest = PageRequest.of(
                 page,
                 size
@@ -219,10 +215,13 @@ public class EventService {
                 filters
         );
 
-        Query queryWithPage = new Query(criteria).with(pageRequest);
+        Query defaultQuery = new Query();
+
+        Query queryWithPage = (criteria != null) ? new Query(criteria) : defaultQuery;
+        queryWithPage.with(pageRequest);
 
         long total = mongoTemplate.count(
-                new Query(criteria),
+                (criteria != null) ? new Query(criteria) : defaultQuery,
                 EventEntity.class
         );
 

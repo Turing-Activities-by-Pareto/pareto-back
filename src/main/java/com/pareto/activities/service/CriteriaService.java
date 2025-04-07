@@ -18,6 +18,25 @@ import static com.pareto.activities.util.Utils.toCamelCase;
 @Service
 public class CriteriaService {
 
+    /**
+     * Generates a {@link Criteria} object for the given entity class and dynamic filters.
+     * <p>
+     * This method inspects the provided filter map and constructs a JPA Criteria query
+     * with predicates corresponding to matching entity fields.
+     * </p>
+     *
+     * <p>
+     * Return behavior:
+     * <ul>
+     *   <li>Returns {@code null} if no filter keys match fields of the entity class or the filter map is empty.</li>
+     *   <li>Returns a fully constructed {@code CriteriaQuery} object with applied filtering predicates otherwise.</li>
+     * </ul>
+     * </p>
+     *
+     * @param clazz   the entity class to generate the query for
+     * @param filters a map of filter field names and their corresponding values
+     * @return a {@code CriteriaQuery<T>} with applied filters, or {@code null} if no valid filters matched
+     */
     public Criteria generateCriterias(
             Class<?> clazz,
             MultiValueMap<String, String> filters
@@ -79,15 +98,11 @@ public class CriteriaService {
                 .toArray(Criteria[]::new)
                 ;
 
-        Criteria criteria;
-        if (allCriterias.length == 0) {
-            criteria = Criteria
-                    .where("title")
-                    .exists(true);
+        if(allCriterias.length == 0) {
+            return null;
         }
-        else {
-            criteria = new Criteria().andOperator(allCriterias);
-        }
+
+        Criteria criteria = new Criteria().andOperator(allCriterias);
 
         log.info(
                 "Criteria should look like this:\n{}",
