@@ -1,6 +1,5 @@
 package com.pareto.activities.controller;
 
-import ch.qos.logback.core.joran.sanity.Pair;
 import com.pareto.activities.DTO.EvReqResponse;
 import com.pareto.activities.DTO.EventCreateResponse;
 import com.pareto.activities.DTO.EventGetResponse;
@@ -22,8 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/events")

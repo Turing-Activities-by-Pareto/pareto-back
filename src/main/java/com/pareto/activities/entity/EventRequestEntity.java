@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 public class EventRequestEntity {
 

@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,6 +49,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
+@Profile("!debug")
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler implements IErrorResponseBuilder {
 
     private static final String INVALID_REQUEST_FORMAT = "Invalid request data. Please check your request body.";

@@ -1,8 +1,11 @@
 package com.pareto.activities.util;
 
 import com.google.common.base.CaseFormat;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -15,10 +18,7 @@ public class Utils {
     public static int getBucketIndex(
             HashMap<?, ?> map,
             Object key
-    )
-            throws
-            NoSuchFieldException,
-            IllegalAccessException {
+    ) throws NoSuchFieldException, IllegalAccessException {
         int hash = key.hashCode();
         Field tableField = HashMap.class.getDeclaredField("table");
         tableField.setAccessible(true);
@@ -29,10 +29,7 @@ public class Utils {
     public static Object[] getBucketElements(
             HashMap<?, ?> map,
             int bucketIndex
-    )
-            throws
-            NoSuchFieldException,
-            IllegalAccessException {
+    ) throws NoSuchFieldException, IllegalAccessException {
         Field tableField = HashMap.class.getDeclaredField("table");
         tableField.setAccessible(true);
         Object[] table = (Object[]) tableField.get(map);
@@ -99,6 +96,15 @@ public class Utils {
         private final Function<String, String> formatStrategy;
     }
     // @formatter:on
+
+    public static String getHeader(String headerName) {
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            return request.getHeader(headerName);
+        }
+        return null;
+    }
 
     public static String toKebabCase(String s) {
         return CaseFormat.UPPER_CAMEL.to(
