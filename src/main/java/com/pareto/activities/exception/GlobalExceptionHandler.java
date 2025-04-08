@@ -1,7 +1,7 @@
 package com.pareto.activities.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import com.pareto.activities.config.Constant;
+import com.pareto.activities.config.Constants;
 import com.pareto.activities.enums.GeneralExceptionMessages;
 import com.pareto.activities.exception.utils.ExceptionKeyAndMessage;
 import com.pareto.activities.exception.utils.HttpResponseConstants;
@@ -89,7 +89,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
             List<?> errors
     ) {
 
-        String exceptionMessage = GeneralExceptionMessages.getExceptionByCode(Constant.AZ);
+        String exceptionMessage = GeneralExceptionMessages.getExceptionByCode(Constants.AZ);
 
         return ErrorResponseBuilder(
                 request,
@@ -592,13 +592,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
                 TechExceptionCodes.METHOD_ARGUMENT_NOT_VALID.getExceptionCode(),
                 TechExceptionCodes.METHOD_ARGUMENT_NOT_VALID.getExceptionMessage(),
 
-                ex.getFieldErrors().stream().map(
-                        fieldError -> new FieldError(
-                                fieldError.getField(),
-                                fieldError.getDefaultMessage(),
-                                fieldError.getRejectedValue()
+                ex
+                        .getFieldErrors()
+                        .stream()
+                        .map(
+                                fieldError -> new FieldError(
+                                        fieldError.getField(),
+                                        fieldError.getDefaultMessage(),
+                                        fieldError.getRejectedValue()
+                                )
                         )
-                ).collect(Collectors.toList())
+                        .collect(Collectors.toList())
         );
     }
 

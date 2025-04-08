@@ -42,9 +42,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - REDIS_PASSWORD=redis
-      - MONGODB_URI=mongodb://mongodb:27017/activities
-      - MONGODB_USERNAME=bisco
-      - MONGODB_PASSWORD=biscobisco
+      - MONGODB_URI=mongodb://admin:secretpassword@localhost:27017/activities?authSource=admin
       - ELASTICSEARCH_URI=http://elasticsearch:9200
 
   redis:

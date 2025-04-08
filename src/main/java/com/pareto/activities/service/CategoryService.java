@@ -26,12 +26,19 @@ public class CategoryService {
 
         Map<String, List<String>> categorySubCategoriesMap = new HashMap<>();
         for (EventCategoryEntity category : categories) {
-            List<String> subCategoryNames = subCategories.stream()
-                    .filter(subCategory -> subCategory.getCategoryId().equals(category.getId()))
+            List<String> subCategoryNames = subCategories
+                    .stream()
+                    .filter(subCategory -> subCategory
+                            .getCategoryId()
+                            .equals(category.getId()))
                     .map(EventSubCategoryEntity::getName)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList())
+                    ;
 
-            categorySubCategoriesMap.put(category.getName(), subCategoryNames);
+            categorySubCategoriesMap.put(
+                    category.getName(),
+                    subCategoryNames
+            );
         }
 
         return categorySubCategoriesMap;

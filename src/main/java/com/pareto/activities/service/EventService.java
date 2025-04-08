@@ -18,16 +18,24 @@ import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
-import static com.pareto.activities.config.Constant.ALLOWED_IMAGE_EXTENSIONS;
+import static com.pareto.activities.config.Constants.ALLOWED_IMAGE_EXTENSIONS;
 
 @Service
 @RequiredArgsConstructor
@@ -41,21 +49,26 @@ public class EventService {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
     private final IStorageService minioStorageService;
+    @Qualifier("biscoMongoTemplate")
+    private final MongoTemplate mongoTemplate;
+    private final CriteriaService criteriaService;
 
     public EventCreateResponse createEvent(
             EventRequest event
     ) {
         SecurityContext context = SecurityContextHolder.getContext();
-        if (!userRepository.existsById(context
-                                               .getAuthentication()
-                                               .getPrincipal()
-                                               .toString())
+        if (!userRepository.existsById(
+                context
+                        .getAuthentication()
+                        .getPrincipal()
+                        .toString())
         ) {
             throw new BusinessException(
-                    ". with user Id %s .".formatted(context
-                                                            .getAuthentication()
-                                                            .getPrincipal()
-                                                            .toString()),
+                    ". with user Id %s .".formatted(
+                            context
+                                    .getAuthentication()
+                                    .getPrincipal()
+                                    .toString()),
                     BusinessStatus.USER_NOT_FOUND,
                     HttpStatus.NOT_FOUND
             );
@@ -98,11 +111,13 @@ public class EventService {
                 Method.PUT
         );
 
-        FileEntity savedFile = fileRepository.save(FileEntity
-                                                           .builder()
-                                                           .bucket("event-background")
-                                                           .object(fileNameWithExtension)
-                                                           .build());
+        FileEntity savedFile = fileRepository.save(
+                FileEntity
+                        .builder()
+                        .bucket("event-background")
+                        .object(fileNameWithExtension)
+                        .build()
+        );
 
         eventEntity.setConfirmStatus(EConfirmStatus.PENDING);
         eventEntity.setFileId(savedFile.getId());
@@ -118,12 +133,14 @@ public class EventService {
     public EventGetResponse getEventById(
             String eventId
     ) {
-        return eventMapper.toEventGetResponse(eventRepository
-                                                      .findById(eventId)
-                                                      .orElseThrow(() -> new BusinessException(
-                                                              BusinessStatus.EVENT_NOT_FOUND,
-                                                              HttpStatus.NOT_FOUND
-                                                      )));
+        return eventMapper.toEventGetResponse(
+                eventRepository
+                        .findById(eventId)
+                        .orElseThrow(() -> new BusinessException(
+                                BusinessStatus.EVENT_NOT_FOUND,
+                                HttpStatus.NOT_FOUND
+                        ))
+        );
     }
 
     public List<EventsGetResponse> getEvents() {
@@ -183,13 +200,57 @@ public class EventService {
 
     public Page<EventsGetResponse> getEventsPage(
             int page,
-            int size
+            int size,
+            MultiValueMap<String, String> filters
     ) {
-        return eventRepository
-                .findAll(PageRequest.of(
-                        page,
-                        size
-                ))
-                .map(eventMapper::toEventsGetResponse);
+        log.info(
+                "pageable size: {}, page: {}",
+                size,
+                page
+        );
+
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                size
+        );
+
+        Document document = criteriaService.generateQuery(
+                EventEntity.class,
+                filters
+        );
+
+        /*
+        if(document != null && !document.isEmpty()) {
+            log.info("Final:\n{}",
+                     document.toJson(JsonWriterSettings
+                                             .builder()
+                                             .indent(true)
+                                             .build())
+            );
+        }
+        */
+
+        Query defaultQuery = new Query();
+
+        Query queryWithPage = (document != null) ? new BasicQuery(document) : defaultQuery;
+        queryWithPage.with(pageRequest);
+
+        long total = mongoTemplate.count(
+                (document != null) ? new BasicQuery(document) : defaultQuery,
+                EventEntity.class
+        );
+
+        List<EventEntity> eventEntities = mongoTemplate.find(
+                queryWithPage,
+                EventEntity.class
+        );
+
+        Page<EventEntity> pageResult = new PageImpl<>(
+                eventEntities,
+                pageRequest,
+                total
+        );
+
+        return pageResult.map(eventMapper::toEventsGetResponse);
     }
 }

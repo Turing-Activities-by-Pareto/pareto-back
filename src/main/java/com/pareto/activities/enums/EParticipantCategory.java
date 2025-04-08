@@ -19,15 +19,6 @@ public enum EParticipantCategory {
     GUEST,
     ;
 
-    public String fromName() {
-        return name().toUpperCase();
-    }
-
-    @JsonValue
-    public String getDisplayName() {
-        return name().toUpperCase();
-    }
-
     @JsonValue
     public static String toValue(EParticipantCategory status) {
         return status
@@ -49,5 +40,14 @@ public enum EParticipantCategory {
                         HttpStatus.BAD_REQUEST
                 ))
                 ;
+    }
+
+    public String fromName() {
+        return name().toUpperCase();
+    }
+
+    @JsonValue
+    public String getDisplayName() {
+        return name().toUpperCase();
     }
 }

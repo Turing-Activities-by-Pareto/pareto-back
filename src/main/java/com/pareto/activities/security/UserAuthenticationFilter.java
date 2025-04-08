@@ -1,6 +1,6 @@
 package com.pareto.activities.security;
 
-import com.pareto.activities.config.Constant;
+import com.pareto.activities.config.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,8 +36,8 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
         String roles;
 
         try {
-            userId = request.getHeader(Constant.USER_HEADER);
-            roles = request.getHeader(Constant.USER_ROLES_HEADER);
+            userId = request.getHeader(Constants.USER_HEADER);
+            roles = request.getHeader(Constants.USER_ROLES_HEADER);
         } catch (
                 Exception e) {
             filterChain.doFilter(
