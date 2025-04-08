@@ -19,12 +19,19 @@ public class SecurityConfig {
     private final UserAuthenticationFilter userAuthenticationFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http)
+            throws
+            Exception {
         return http
                 .authorizeHttpRequests(
-                        auth -> auth.anyRequest().permitAll()
+                        auth -> auth
+                                .anyRequest()
+                                .permitAll()
                 )
-                .addFilterBefore(userAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(
+                        userAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

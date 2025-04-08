@@ -28,34 +28,72 @@ public class DBInit {
     CommandLineRunner initDatabase() {
         return args -> {
             if (categoryRepository.count() == 0 && subCategoryRepository.count() == 0 && userRepository.count() == 0) {
-                UserEntity user = UserEntity.builder()
+                UserEntity user = UserEntity
+                        .builder()
                         .role(EParticipantCategory.STUDENT)
                         .id("67f0524490acbe11b019891f") //static id, so it wont generate everytime
                         .username("forever_student")
                         .password("123456")
                         .isActive(true)
-                        .build();
+                        .build()
+                        ;
                 userRepository.save(user);
 
                 Map<String, Set<String>> categoryMap = new HashMap<>();
-                categoryMap.put("ENTERTAINMENT", Set.of("FOOTBALL", "VOLLEYBALL", "BOWLING", "TRIPS", "MAFIA", "BOARD GAMES", "PICNIC", "OTHER"));
-                categoryMap.put("INTELLECTUAL", Set.of("CHESS", "NHN", "KHAMSA", "KUDOS", "OTHER"));
-                categoryMap.put("EDUCATION", Set.of("HACKATHON", "TECH-TALK", "WORKSHOP", "OTHER"));
-                categoryMap.put("OTHER", Set.of("OTHER"));
+                categoryMap.put(
+                        "ENTERTAINMENT",
+                        Set.of(
+                                "FOOTBALL",
+                                "VOLLEYBALL",
+                                "BOWLING",
+                                "TRIPS",
+                                "MAFIA",
+                                "BOARD GAMES",
+                                "PICNIC",
+                                "OTHER"
+                        )
+                );
+                categoryMap.put(
+                        "INTELLECTUAL",
+                        Set.of(
+                                "CHESS",
+                                "NHN",
+                                "KHAMSA",
+                                "KUDOS",
+                                "OTHER"
+                        )
+                );
+                categoryMap.put(
+                        "EDUCATION",
+                        Set.of(
+                                "HACKATHON",
+                                "TECH-TALK",
+                                "WORKSHOP",
+                                "OTHER"
+                        )
+                );
+                categoryMap.put(
+                        "OTHER",
+                        Set.of("OTHER")
+                );
 
                 categoryMap.forEach((categoryName, subCategoryNames) -> {
-                    EventCategoryEntity category = EventCategoryEntity.builder()
+                    EventCategoryEntity category = EventCategoryEntity
+                            .builder()
                             .name(categoryName)
-                            .build();
+                            .build()
+                            ;
                     category = categoryRepository.save(category);
                     String categoryId = category.getId();
 
 
                     subCategoryNames.forEach(subCategoryName -> {
-                        EventSubCategoryEntity subCategory = EventSubCategoryEntity.builder()
+                        EventSubCategoryEntity subCategory = EventSubCategoryEntity
+                                .builder()
                                 .name(subCategoryName)
                                 .categoryId(categoryId)
-                                .build();
+                                .build()
+                                ;
                         subCategoryRepository.save(subCategory);
                     });
                 });

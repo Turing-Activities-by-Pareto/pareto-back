@@ -12,10 +12,6 @@ public enum EConfirmStatus {
     ACTIVE,
     INACTIVE;
 
-    public String fromName() {
-        return name().toUpperCase();
-    }
-
     @JsonCreator
     public static EConfirmStatus fromValue(String status) {
         return Arrays
@@ -25,6 +21,10 @@ public enum EConfirmStatus {
                         .equalsIgnoreCase(status))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public String fromName() {
+        return name().toUpperCase();
     }
 
     @JsonValue

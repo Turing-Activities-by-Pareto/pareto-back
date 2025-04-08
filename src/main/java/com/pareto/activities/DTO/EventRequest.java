@@ -6,13 +6,17 @@ import com.pareto.activities.validators.annotation.CategoryValidator;
 import com.pareto.activities.validators.annotation.SubCategory;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
 @CategoryValidator
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventRequest {
 
     @NotEmpty
