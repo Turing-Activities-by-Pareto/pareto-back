@@ -18,6 +18,8 @@ import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.Document;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -46,6 +48,7 @@ public class EventService {
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
     private final IStorageService minioStorageService;
+    @Qualifier("biscoMongoTemplate")
     private final MongoTemplate mongoTemplate;
     private final CriteriaService criteriaService;
 
