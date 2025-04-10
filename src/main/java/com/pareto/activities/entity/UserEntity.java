@@ -54,6 +54,8 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventRequestEntity> eventRequests;
 
+    private boolean isActive;
+
     //helper methods for events
 //    public void addEvent(EventEntity event) {
 //        events.add(event);

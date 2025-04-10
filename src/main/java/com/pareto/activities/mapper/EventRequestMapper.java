@@ -8,11 +8,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 
 @Mapper(componentModel = "spring", nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
-public interface IEventRequestMapper {
+public interface EventRequestMapper {
 
     EventRequestRepository eventRequestRepository = null;
 
     @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "eventId", ignore = true)
     EvReqResponse toEvReqResponse(EventRequestEntity eventRequestEntity);
 
 }
