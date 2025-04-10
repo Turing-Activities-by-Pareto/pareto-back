@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface EventCategoryRepository extends JpaRepository<EventCategoryEntity, Long> {
     Optional<EventCategoryEntity> findByName(String category);
+
+    boolean existsByName(String category);
 }

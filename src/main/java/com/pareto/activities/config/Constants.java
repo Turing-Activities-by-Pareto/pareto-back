@@ -8,6 +8,13 @@ public class Constants {
     public static final String EMPTY_STRING = "";
     public static final String USER_HEADER = "X-User-Id";
 
+    public static class ValidatorConstants {
+        public static final String CATEGORY_MUST_NOT_BE_NULL = "Category must not be null";
+        public static final String SUB_CATEGORY_MUST_NOT_BE_NULL = "Sub Category must not be null";
+        public static final String CATEGORY_DOES_NOT_EXISTS = "Category: %s does not exits";
+        public static final String SUB_CATEGORY_DOES_NOT_EXISTS = "Sub Category: %s does not exits";
+    }
+
     private Constants() {
         throw new IllegalStateException();
     }

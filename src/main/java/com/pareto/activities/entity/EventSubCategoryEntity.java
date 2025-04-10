@@ -33,7 +33,7 @@ public class EventSubCategoryEntity {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "event_category_id", nullable = false)
+    @JoinColumn( name = "event_category_id", nullable = false )
     private EventCategoryEntity category;
 
     @OneToMany(mappedBy = "subCategory")

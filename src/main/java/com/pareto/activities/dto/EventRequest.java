@@ -1,35 +1,52 @@
 package com.pareto.activities.dto;
 
 import com.pareto.activities.enums.EParticipantCategory;
+import com.pareto.activities.validators.annotation.Category;
+import com.pareto.activities.validators.annotation.CategoryValidator;
+import com.pareto.activities.validators.annotation.SubCategory;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
+@CategoryValidator
+@AllArgsConstructor
+@NoArgsConstructor
 public class EventRequest {
-//    @NotEmpty
+
+    @NotEmpty
     private String title;
+
+    @NotEmpty
     private String description;
+
+    @NotEmpty
+    @Category
     private String category;
+
+    @NotEmpty
+    @SubCategory
     private String subCategory;
+
+    @NotEmpty
     private String place;
 
-//    @NotNull
-    private List<EParticipantCategory> participantCategories;
+    private Set<EParticipantCategory> participantCategories;
 
-//    @NotEmpty
-//    @FutureOrPresent
+    @NotNull
     private LocalDateTime deadline;
 
-//    @NotNull
-//    @FutureOrPresent
+    @NotNull
     private LocalDateTime startDate;
 
-//    @NotNull
-//    @PastOrPresent
+    @NotNull
     private LocalDateTime endDate;
 
-//    @NotEmpty
+    @NotEmpty
     private String fileExtension;
 }

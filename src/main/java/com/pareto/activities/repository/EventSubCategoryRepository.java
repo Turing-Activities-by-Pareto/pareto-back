@@ -14,4 +14,6 @@ public interface EventSubCategoryRepository extends JpaRepository<EventSubCatego
     Optional<EventSubCategoryEntity> findByName(String name);
 
     List<EventSubCategoryEntity> findByCategory(EventCategoryEntity category);
+
+    boolean existsByName(String subCategory);
 }
