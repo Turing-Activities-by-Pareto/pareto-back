@@ -1,7 +1,7 @@
 package com.pareto.activities.controller;
 
-import com.pareto.activities.DTO.UserCreateRequest;
-import com.pareto.activities.DTO.UserResponse;
+import com.pareto.activities.dto.UserCreateRequest;
+import com.pareto.activities.dto.UserResponse;
 import com.pareto.activities.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

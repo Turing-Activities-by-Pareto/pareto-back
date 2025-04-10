@@ -1,9 +1,9 @@
 package com.pareto.activities.service;
 
-import com.pareto.activities.DTO.EventCreateResponse;
-import com.pareto.activities.DTO.EventGetResponse;
-import com.pareto.activities.DTO.EventRequest;
-import com.pareto.activities.DTO.EventsGetResponse;
+import com.pareto.activities.dto.EventCreateResponse;
+import com.pareto.activities.dto.EventGetResponse;
+import com.pareto.activities.dto.EventRequest;
+import com.pareto.activities.dto.EventsGetResponse;
 import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.entity.FileEntity;
 import com.pareto.activities.enums.BusinessStatus;

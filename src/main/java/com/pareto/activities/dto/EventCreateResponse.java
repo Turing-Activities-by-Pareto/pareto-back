@@ -1,4 +1,4 @@
-package com.pareto.activities.DTO;
+package com.pareto.activities.dto;
 
 import com.pareto.activities.enums.EParticipantCategory;
 import lombok.Builder;

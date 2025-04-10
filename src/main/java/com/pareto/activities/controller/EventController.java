@@ -1,10 +1,10 @@
 package com.pareto.activities.controller;
 
-import com.pareto.activities.DTO.EvReqResponse;
-import com.pareto.activities.DTO.EventCreateResponse;
-import com.pareto.activities.DTO.EventGetResponse;
-import com.pareto.activities.DTO.EventRequest;
-import com.pareto.activities.DTO.EventsGetResponse;
+import com.pareto.activities.dto.EvReqResponse;
+import com.pareto.activities.dto.EventCreateResponse;
+import com.pareto.activities.dto.EventGetResponse;
+import com.pareto.activities.dto.EventRequest;
+import com.pareto.activities.dto.EventsGetResponse;
 import com.pareto.activities.aspect.HandleDuplication;
 import com.pareto.activities.service.EventRequestService;
 import com.pareto.activities.service.EventService;
@@ -80,12 +80,10 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     @HandleDuplication
     public EvReqResponse setStatus(
-            @PathVariable Long eventId,
-            @RequestHeader("X-UserID") Long userId
+            @PathVariable Long eventId
     ) {
         return eventRequestService.requestParticipation(
-                eventId,
-                userId
+                eventId
         );
     }
 }

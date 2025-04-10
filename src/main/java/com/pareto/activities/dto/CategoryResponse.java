@@ -1,4 +1,4 @@
-package com.pareto.activities.DTO;
+package com.pareto.activities.dto;
 
 import lombok.Builder;
 import lombok.Data;

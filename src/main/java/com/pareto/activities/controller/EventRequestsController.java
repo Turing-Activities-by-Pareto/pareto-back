@@ -1,6 +1,6 @@
 package com.pareto.activities.controller;
 
-import com.pareto.activities.DTO.EvReqResponse;
+import com.pareto.activities.dto.EvReqResponse;
 import com.pareto.activities.aspect.HandleDuplication;
 import com.pareto.activities.enums.ERequestStatus;
 import com.pareto.activities.service.EventRequestService;

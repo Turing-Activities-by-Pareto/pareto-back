@@ -1,4 +1,4 @@
-package com.pareto.activities.DTO;
+package com.pareto.activities.dto;
 
 import com.pareto.activities.enums.EParticipantCategory;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
+public class UserCreateRequest {
     private String username;
     private String password;
     private EParticipantCategory role;

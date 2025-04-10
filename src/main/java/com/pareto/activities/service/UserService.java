@@ -1,7 +1,7 @@
 package com.pareto.activities.service;
 
-import com.pareto.activities.DTO.UserCreateRequest;
-import com.pareto.activities.DTO.UserResponse;
+import com.pareto.activities.dto.UserCreateRequest;
+import com.pareto.activities.dto.UserResponse;
 import com.pareto.activities.entity.UserEntity;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;

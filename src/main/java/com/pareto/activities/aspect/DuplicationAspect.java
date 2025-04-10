@@ -1,7 +1,7 @@
 package com.pareto.activities.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pareto.activities.config.Constant;
+import com.pareto.activities.config.Constants;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;
 import com.pareto.activities.redis.RedisRepository;
@@ -132,7 +132,7 @@ public class DuplicationAspect {
     private void cacheRequest(String requestKey) {
         redisRepository.putByKey(
                 requestKey,
-                Constant.EMPTY_STRING,
+                Constants.EMPTY_STRING,
                 Duration.ofSeconds(40)
         );
     }

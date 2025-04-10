@@ -1,6 +1,7 @@
 package com.pareto.activities.service;
 
-import com.pareto.activities.DTO.EvReqResponse;
+import com.pareto.activities.config.Constants;
+import com.pareto.activities.dto.EvReqResponse;
 import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.entity.EventRequestEntity;
 import com.pareto.activities.enums.BusinessStatus;
@@ -16,8 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 @RequiredArgsConstructor
 @Service
@@ -55,9 +56,16 @@ public class EventRequestService {
 
 
     public EvReqResponse requestParticipation(
-            Long eventId,
-            Long userId
+            Long eventId
     ) {
+
+        String userIdString = ((ServletRequestAttributes) RequestContextHolder
+                        .getRequestAttributes())
+                        .getRequest()
+                        .getHeader(Constants.USER_HEADER);
+
+        Long userId = Long.valueOf(userIdString);
+
         EventEntity event = eventRepository
                 .findById(eventId)
                 .orElseThrow(() -> new BusinessException(

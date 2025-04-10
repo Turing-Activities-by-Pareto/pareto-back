@@ -1,6 +1,6 @@
 package com.pareto.activities.mapper;
 
-import com.pareto.activities.DTO.EvReqResponse;
+import com.pareto.activities.dto.EvReqResponse;
 import com.pareto.activities.entity.EventRequestEntity;
 import com.pareto.activities.repository.EventRequestRepository;
 import org.mapstruct.Mapper;

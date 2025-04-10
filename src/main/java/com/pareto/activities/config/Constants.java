@@ -1,13 +1,14 @@
 package com.pareto.activities.config;
 
-public class Constant {
+public class Constants {
     public static final String EN = "en";
     public static final String AZ = "az";
     public static final String BIRTH_DATE_FORMAT = "dd.MM.yyyy";
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd";
     public static final String EMPTY_STRING = "";
+    public static final String USER_HEADER = "X-User-Id";
 
-    private Constant() {
+    private Constants() {
         throw new IllegalStateException();
     }
 
