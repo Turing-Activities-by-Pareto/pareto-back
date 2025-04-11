@@ -6,6 +6,7 @@ import com.pareto.activities.dto.EventGetResponse;
 import com.pareto.activities.dto.EventRequest;
 import com.pareto.activities.dto.EventsGetResponse;
 import com.pareto.activities.aspect.HandleDuplication;
+import com.pareto.activities.dto.GetEventsFilter;
 import com.pareto.activities.service.EventRequestService;
 import com.pareto.activities.service.EventService;
 import jakarta.validation.Valid;
@@ -42,12 +43,10 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     public Page<EventsGetResponse> getEvents(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            GetEventsFilter filter
     ) {
-        return eventService.getEventsPage(
-                page,
-                size
-        );
+        throw new UnsupportedOperationException("add pagination and filter");
     }
 
     @GetMapping(value = "/{eventId}")
