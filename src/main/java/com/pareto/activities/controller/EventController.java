@@ -6,7 +6,7 @@ import com.pareto.activities.dto.EventGetResponse;
 import com.pareto.activities.dto.EventRequest;
 import com.pareto.activities.dto.EventsGetResponse;
 import com.pareto.activities.aspect.HandleDuplication;
-import com.pareto.activities.dto.GetEventsFilter;
+import com.pareto.activities.filters.GetEventsFilter;
 import com.pareto.activities.service.EventRequestService;
 import com.pareto.activities.service.EventService;
 import jakarta.validation.Valid;

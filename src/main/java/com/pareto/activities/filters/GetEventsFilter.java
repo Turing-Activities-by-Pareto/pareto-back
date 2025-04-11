@@ -1,4 +1,4 @@
-package com.pareto.activities.dto;
+package com.pareto.activities.filters;
 
 import com.pareto.activities.entity.EventRequestEntity;
 import com.pareto.activities.enums.EConfirmStatus;
