@@ -20,7 +20,7 @@ public interface UserMapper {
     UserCreateRequest toUserCreateRequest(UserEntity userEntity);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "isActive", constant = "true")
     @Mapping(target = "events", ignore = true)
     @Mapping(target = "eventRequests", ignore = true)
     UserEntity toUserEntity(UserCreateRequest userCreateRequest);

@@ -1,17 +1,28 @@
 package com.pareto.activities.service;
 
+import com.google.common.base.Optional;
 import com.pareto.activities.dto.EventCreateResponse;
+import com.pareto.activities.dto.EventFilter;
 import com.pareto.activities.dto.EventGetResponse;
 import com.pareto.activities.dto.EventRequest;
 import com.pareto.activities.dto.EventsGetResponse;
+import com.pareto.activities.entity.EventCategoryEntity;
 import com.pareto.activities.entity.EventEntity;
+import com.pareto.activities.entity.EventSubCategoryEntity;
 import com.pareto.activities.entity.FileEntity;
+import com.pareto.activities.entity.Location;
+import com.pareto.activities.entity.ParticipantCategory;
+import com.pareto.activities.entity.UserEntity;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;
 import com.pareto.activities.mapper.EventMapper;
 import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.EventSubCategoryRepository;
+import com.pareto.activities.repository.LocationRepository;
+import com.pareto.activities.repository.ParticipantCategoryRepository;
+import com.pareto.activities.repository.UserRepository;
+import com.pareto.activities.specification.EventSpecification;
 import io.minio.http.Method;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +32,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.pareto.activities.config.Constants.ALLOWED_IMAGE_EXTENSIONS;
 
 @Service
 @RequiredArgsConstructor
@@ -30,23 +46,69 @@ public class EventService {
 
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
-    private final FileRepository fileRepository;
+    private final UserRepository userRepository;
     private final EventCategoryRepository eventCategoryRepository;
     private final EventSubCategoryRepository eventSubCategoryRepository;
+    private final LocationRepository locationRepository;
+    private final ParticipantCategoryRepository participantCategoryRepository;
     private final IStorageService minioStorageService;
 
+    @Transactional
     public EventCreateResponse createEvent(
-            EventRequest event
+            EventRequest eventRequest,
+            Long userId
     ) {
+        //todo: alert EventRequest about this new created event (event is pending.)
+        EventEntity eventEntity = eventMapper.toEventEntity(eventRequest);
 
-        EventEntity eventEntity = eventMapper.toEventEntity(event);
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new BusinessException(BusinessStatus.USER_NOT_FOUND));
+        EventCategoryEntity category = eventCategoryRepository.findByName(eventRequest.getCategory())
+                .orElseThrow(() -> new BusinessException(BusinessStatus.EVENT_CATEGORY_NOT_FOUND));
+        EventSubCategoryEntity subCategory = eventSubCategoryRepository.findByName(eventRequest.getSubCategory())
+                .orElseThrow(() -> new BusinessException(BusinessStatus.EVENT_SUB_CATEGORY_NOT_FOUND));
 
-        FileEntity fileEntity = new FileEntity();
-        FileEntity fileEntityDB = fileRepository.save(fileEntity);
 
-        eventEntity.setFile(fileEntityDB);
-        EventEntity eventEntityDB = eventRepository.save(eventEntity);
-        String objectName = fileEntityDB.getId() + "." + event.getFileExtension();
+        Location location = eventRequest.getIsLocal() ?
+                locationRepository.findByName(eventRequest.getLocation())
+                        .orElseThrow(() -> new BusinessException(BusinessStatus.LOCATION_NOT_FOUND))
+                :
+                locationRepository.findByName(eventRequest.getLocation())
+                        .orElse(
+                                locationRepository.save(
+                                        Location.builder()
+                                                .name(eventRequest.getLocation())
+                                                .isLocal(eventRequest.getIsLocal())
+                                                .build()
+                                )
+                        );
+
+        if(eventRequest.getUnlimitedSeats() && eventRequest.getTotalSeats() != 0) {
+            throw new BusinessException(BusinessStatus.INVALID_ARGUMENTS);
+        }
+
+        Set<ParticipantCategory> participantCategories = new HashSet<>();
+        for (String participantCategory : eventRequest.getParticipantCategories()) {
+            participantCategories.add(
+                    participantCategoryRepository.findByName(participantCategory)
+                            .orElse(participantCategoryRepository.save(ParticipantCategory.builder()
+                                    .name(participantCategory)
+                                            .events(new HashSet<>())
+                                    .build())
+                            )
+            );
+        }
+
+
+        String fileExtension = eventRequest.getFileExtension();
+        if (!ALLOWED_IMAGE_EXTENSIONS.contains(fileExtension)) {
+            throw new BusinessException(BusinessStatus.INVALID_FILE_EXTENSION);
+        }
+        String objectName = minioStorageService.generateUniqueFileName() + "." + fileExtension;
+        FileEntity fileEntity = FileEntity.builder()
+                .bucket("event-background")
+                .object(objectName)
+                .build();
 
         String presignedUrl = minioStorageService.getObjectUrl(
                 "event-background",
@@ -54,14 +116,21 @@ public class EventService {
                 Method.PUT
         );
 
-        fileEntityDB.setBucket("event-background");
-        fileEntityDB.setObject(objectName);
+        eventEntity.addUser(user);
+        eventEntity.addCategory(category);
+        eventEntity.addSubCategory(subCategory);
+        eventEntity.setFile(fileEntity);
+        eventEntity.setLocation(location);
+        eventEntity.addAllParticipantCategories(participantCategories);
 
-        fileRepository.save(fileEntityDB);
+        EventEntity savedEvent = eventRepository.save(eventEntity);
 
-        EventCreateResponse response = eventMapper.toEventCreateResponse(eventEntityDB);
-
+        EventCreateResponse response = eventMapper.toEventCreateResponse(savedEvent);
         response.setImageUploadUrl(presignedUrl);
+        response.setParticipantCategories(savedEvent.getParticipantCategories().stream()
+                .map(ParticipantCategory::getName)
+                .collect(Collectors.toSet())
+        );
 
         return response;
     }
@@ -116,8 +185,7 @@ public class EventService {
                         BusinessStatus.EVENT_NOT_FOUND,
                         HttpStatus.NOT_FOUND
                 ))
-                .getFile()
-                ;
+                .getFile();
 
         String objectName = fileEntity.getObject();
         String bucket = fileEntity.getBucket();
@@ -131,10 +199,12 @@ public class EventService {
 
     public Page<EventsGetResponse> getEventsPage(
             int page,
-            int size
+            int size,
+            EventFilter eventFilter
     ) {
         return eventRepository
                 .findAll(
+                        EventSpecification.filterEvents(eventFilter),
                         PageRequest.of(
                                 page,
                                 size

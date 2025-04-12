@@ -1,10 +1,10 @@
 package com.pareto.activities.dto;
 
-import com.pareto.activities.enums.EParticipantCategory;
+import com.pareto.activities.entity.ParticipantCategory;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Builder
 @Data
@@ -12,9 +12,12 @@ public class EventGetResponse {
     private Long id;
     private String title;
     private String description;
-    private String place;
+    private Boolean isLocal;
+    private String location;
     private String category;
+    private Boolean unlimitedSeats;
+    private Integer remainingSeats;
     private String subCategory;
     private String imageGetUrl;
-    private List<EParticipantCategory> participantCategories;
+    private Set<ParticipantCategory> participantCategories;
 }

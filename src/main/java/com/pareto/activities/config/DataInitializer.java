@@ -3,9 +3,14 @@ package com.pareto.activities.config;
 import com.pareto.activities.entity.EventCategoryEntity;
 import com.pareto.activities.entity.EventSubCategoryEntity;
 import com.pareto.activities.entity.FileEntity;
+import com.pareto.activities.entity.Location;
+import com.pareto.activities.entity.UserEntity;
+import com.pareto.activities.enums.EParticipantCategory;
 import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.EventSubCategoryRepository;
+import com.pareto.activities.repository.LocationRepository;
+import com.pareto.activities.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,17 +28,30 @@ public class DataInitializer {
     public CommandLineRunner loadData(
             EventCategoryRepository eventCategoryRepository,
             EventSubCategoryRepository subEventCategoryRepository,
+            UserRepository userRepository,
+            LocationRepository locationRepository,
             EventRepository eventRepository
     ) {
         return args -> {
+            if (eventCategoryRepository.count() == 0 &&
+                    subEventCategoryRepository.count() == 0 &&
+                    userRepository.count() == 0 &&
+                    locationRepository.count() == 0) { // Prevent duplicate inserts
 
-            Map<String, String> strCategories = new HashMap<>();
+                UserEntity user = UserEntity.builder()
+                        .username("forever_student")
+                        .password("123456")
+                        .role(EParticipantCategory.STUDENT)
+                        .isActive(true)
+                        .build();
+                userRepository.save(user);
 
-            strCategories.put("ENTERTAINMENT", String.join(", ", Arrays.asList("FOOTBALL", "VOLLEYBALL", "BOWLING", "TRIPS", "MAFIA", "BOARD GAMES", "PICNIC", "OTHER")));
-            strCategories.put("INTELLECTUAL", String.join(", ", Arrays.asList("CHESS", "NHN", "KHAMSA", "KUDOS", "OTHER")));
-            strCategories.put("EDUCATION", String.join(", ", Arrays.asList("HACKATHON", "TECH-TALK", "WORKSHOP", "OTHER")));
+                Location location1 = Location.builder()
+                        .name("Kelvin")
+                        .isLocal(true)
+                        .build();
 
-            if (eventCategoryRepository.count() == 0) { // Prevent duplicate inserts
+                locationRepository.save(location1);
 
                 // Create Event Categories
                 EventCategoryEntity education = new EventCategoryEntity(

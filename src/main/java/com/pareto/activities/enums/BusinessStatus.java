@@ -139,7 +139,28 @@ public enum BusinessStatus implements ExceptionKeyAndMessage {
             1028,
             HttpResponseConstants.ERROR,
             "Event category not found"
-    );
+    ),
+    FILE_EXTENSION_NOT_FOUND(
+            1030,
+            HttpResponseConstants.ERROR,
+            "File extension not found"
+    ),
+    FILE_NOT_FOUND(
+            1031,
+            HttpResponseConstants.ERROR,
+            "File not found"
+    ),
+    INVALID_FILE_EXTENSION(
+            1032,
+            HttpResponseConstants.VALIDATION_ERRORS,
+            "This file extension is not supported"
+    ),
+    LOCATION_NOT_FOUND(
+            1033,
+            HttpResponseConstants.ERROR,
+            "Location not found"
+    )
+    ;
 
     private final int code;
     private final String title;

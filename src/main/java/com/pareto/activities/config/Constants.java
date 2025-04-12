@@ -1,5 +1,7 @@
 package com.pareto.activities.config;
 
+import java.util.Set;
+
 public class Constants {
     public static final String EN = "en";
     public static final String AZ = "az";
@@ -7,6 +9,7 @@ public class Constants {
     public static final String DATE_TIME_PATTERN = "yyyy-MM-dd";
     public static final String EMPTY_STRING = "";
     public static final String USER_HEADER = "X-User-Id";
+    public static final Set<String> ALLOWED_IMAGE_EXTENSIONS = Set.of("jpg", "jpeg", "png");
 
     public static class ValidatorConstants {
         public static final String CATEGORY_MUST_NOT_BE_NULL = "Category must not be null";

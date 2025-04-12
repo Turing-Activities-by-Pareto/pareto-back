@@ -32,7 +32,7 @@ public class EventCategoryEntity {
     @EqualsAndHashCode.Include
     private long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -45,6 +45,16 @@ public class EventCategoryEntity {
     @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventEntity> events;
+
+    public void addEventEntity(EventEntity event) {
+        events.add(event);
+        event.setCategory(this);
+    }
+
+    public void removeEventEntity(EventEntity event) {
+        events.remove(event);
+        event.setCategory(null);
+    }
 
     //helper methods for subCategories
     public void addSubCategory(EventSubCategoryEntity subCategory) {

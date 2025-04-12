@@ -24,6 +24,7 @@ public class CategoryController {
         return categoryService.getAllWithSubCategories();
     }
 
+    //is this even necessary?
     @GetMapping("/sub-categories")
     @ResponseStatus(HttpStatus.OK)
     public Map<String, String> subCategoriesAlongsideCategory() {
