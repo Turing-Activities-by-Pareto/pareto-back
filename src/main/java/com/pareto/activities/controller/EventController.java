@@ -1,5 +1,6 @@
 package com.pareto.activities.controller;
 
+import com.pareto.activities.config.Constants;
 import com.pareto.activities.dto.EvReqResponse;
 import com.pareto.activities.dto.EventCreateResponse;
 import com.pareto.activities.dto.EventFilter;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -49,7 +51,7 @@ public class EventController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Page<EventsGetResponse> getEvents(
+    public Page<EventGetResponse> getEvents(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @ParameterObject EventFilter eventFilter
@@ -64,7 +66,8 @@ public class EventController {
     @GetMapping(value = "/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventGetResponse getEvent(
-            @PathVariable Long eventId
+            @NotNull @Min(1) @PathVariable
+            Long eventId
     ) {
         EventGetResponse eventGetResponse = eventService.getEventById(eventId);
         eventGetResponse.setImageGetUrl(getEventImageGetUrl(eventId));
@@ -74,7 +77,8 @@ public class EventController {
     @GetMapping(value = "/{eventId}/image-get-url")
     @ResponseStatus(HttpStatus.OK)
     public String getEventImageGetUrl(
-            @PathVariable Long eventId
+            @NotNull @Min(1) @PathVariable
+            Long eventId
     ) {
         return eventService.getObjectGetUrl(eventId);
     }
@@ -82,7 +86,8 @@ public class EventController {
     @GetMapping(value = "/{eventId}/image-put-url")
     @ResponseStatus(HttpStatus.OK)
     public String getEventImagePutUrl(
-            @PathVariable Long eventId
+            @NotNull @Min(1) @PathVariable
+            Long eventId
     ) {
         return eventService.getObjectPutUrl(eventId);
     }
@@ -91,10 +96,13 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     @HandleDuplication
     public EvReqResponse setStatus(
-            @PathVariable Long eventId
+            @NotNull @Min(1) @PathVariable
+            Long eventId,
+            @RequestHeader(Constants.USER_HEADER) Long userId
     ) {
         return eventRequestService.requestParticipation(
-                eventId
+                eventId,
+                userId
         );
     }
 }

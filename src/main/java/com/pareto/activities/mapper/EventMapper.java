@@ -43,6 +43,7 @@ public interface EventMapper {
     @Mapping(target = "category", source = "category.name")
     @Mapping(target = "subCategory", source = "subCategory.name")
     @Mapping(target = "location", source = "location.name")
+    @Mapping(target = "participantCategories", ignore = true)
     EventGetResponse toEventGetResponse(
             EventEntity eventEntity
     );

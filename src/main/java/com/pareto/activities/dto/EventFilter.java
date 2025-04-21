@@ -8,20 +8,15 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventFilter {
-    private String username;
-    private String title;
-    //make categories enum
+
     private String category;
     private String subCategory;
-    private String place;
-    private List<EParticipantCategory> participantCategories;
-    private LocalDateTime deadline;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private Set<String> participantCategories;
 }

@@ -45,13 +45,13 @@ public class EventSpecification {
                 Join<EventEntity, ParticipantCategory> join = subRoot.join("participantCategories");
 
                 subquery.select(subRoot.get("id"))
-                        .where(join.in(filter.getParticipantCategories()))
+                        .where(join.get("name").in(filter.getParticipantCategories()))
                         .groupBy(subRoot.get("id"))
-                        .having(cb.equal(cb.countDistinct(join), filter.getParticipantCategories().size()));
+                        .having(cb.equal(cb.countDistinct(join.get("name")), filter.getParticipantCategories().size()));
 
                 predicate = cb.and(
                         predicate,
-                        cb.in(root.get("id")).value(subquery)
+                        root.get("id").in(subquery)
                 );
             }
 

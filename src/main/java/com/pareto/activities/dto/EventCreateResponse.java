@@ -16,11 +16,11 @@ public class EventCreateResponse {
     private String description;
     private Boolean isLocal;
     private String location;
-    private String imageUploadUrl;
     private Set<String> participantCategories;
     private String category;
     private String subCategory;
     private Boolean unlimitedSeats;
     private Integer remainingSeats;
+    private String imageUploadUrl;
 
 }

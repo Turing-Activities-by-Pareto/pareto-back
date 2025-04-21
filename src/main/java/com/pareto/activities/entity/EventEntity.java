@@ -156,6 +156,16 @@ public class EventEntity {
         }
     }
 
+    public void addEventRequest(EventRequestEntity request) {
+        requests.add(request);
+        request.setEvent(this);
+    }
+
+    public void removeEventRequest(EventRequestEntity request) {
+        requests.remove(request);
+        request.setEvent(null);
+    }
+
     public void addUser(UserEntity user) {
         user.addEvent(this);
     }

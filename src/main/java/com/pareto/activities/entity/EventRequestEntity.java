@@ -48,4 +48,20 @@ public class EventRequestEntity {
 
     @Column(name = "requestDate", nullable = false)
     private LocalDateTime requestDate;
+
+    public void addEvent(EventEntity event) {
+        event.addEventRequest(this);
+    }
+
+    public void removeEvent(EventEntity event) {
+        event.removeEventRequest(this);
+    }
+
+    public void addUser(UserEntity user) {
+        user.addEventRequests(this);
+    }
+
+    public void removeUser(UserEntity user) {
+        user.removeEventRequests(this);
+    }
 }

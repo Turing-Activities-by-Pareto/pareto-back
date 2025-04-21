@@ -1,11 +1,9 @@
 package com.pareto.activities.service;
 
-import com.google.common.base.Optional;
 import com.pareto.activities.dto.EventCreateResponse;
 import com.pareto.activities.dto.EventFilter;
 import com.pareto.activities.dto.EventGetResponse;
 import com.pareto.activities.dto.EventRequest;
-import com.pareto.activities.dto.EventsGetResponse;
 import com.pareto.activities.entity.EventCategoryEntity;
 import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.entity.EventSubCategoryEntity;
@@ -15,7 +13,7 @@ import com.pareto.activities.entity.ParticipantCategory;
 import com.pareto.activities.entity.UserEntity;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.exception.BusinessException;
-import com.pareto.activities.mapper.EventMapper;
+import com.pareto.activities.mapper.manual.EventMapper;
 import com.pareto.activities.repository.EventCategoryRepository;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.EventSubCategoryRepository;
@@ -32,10 +30,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.pareto.activities.config.Constants.ALLOWED_IMAGE_EXTENSIONS;
 
@@ -51,6 +49,7 @@ public class EventService {
     private final EventSubCategoryRepository eventSubCategoryRepository;
     private final LocationRepository locationRepository;
     private final ParticipantCategoryRepository participantCategoryRepository;
+    private final EventRequestService eventRequestService;
     private final IStorageService minioStorageService;
 
     @Transactional
@@ -83,7 +82,7 @@ public class EventService {
                                 )
                         );
 
-        if(eventRequest.getUnlimitedSeats() && eventRequest.getTotalSeats() != 0) {
+        if (eventRequest.getUnlimitedSeats() && eventRequest.getTotalSeats() != 0) {
             throw new BusinessException(BusinessStatus.INVALID_ARGUMENTS);
         }
 
@@ -93,7 +92,7 @@ public class EventService {
                     participantCategoryRepository.findByName(participantCategory)
                             .orElse(participantCategoryRepository.save(ParticipantCategory.builder()
                                     .name(participantCategory)
-                                            .events(new HashSet<>())
+                                    .events(new HashSet<>())
                                     .build())
                             )
             );
@@ -124,18 +123,11 @@ public class EventService {
         eventEntity.addAllParticipantCategories(participantCategories);
 
         EventEntity savedEvent = eventRepository.save(eventEntity);
+        eventRequestService.createOrUpdatePendingRequest(savedEvent, user, LocalDateTime.now());
 
-        EventCreateResponse response = eventMapper.toEventCreateResponse(savedEvent);
-        response.setImageUploadUrl(presignedUrl);
-        response.setParticipantCategories(savedEvent.getParticipantCategories().stream()
-                .map(ParticipantCategory::getName)
-                .collect(Collectors.toSet())
-        );
-
-        return response;
+        return eventMapper.toEventCreateResponse(savedEvent, presignedUrl);
     }
 
-    @Transactional
     public EventGetResponse getEventById(
             Long eventId
     ) {
@@ -145,16 +137,34 @@ public class EventService {
                         .orElseThrow(() -> new BusinessException(
                                 BusinessStatus.EVENT_NOT_FOUND,
                                 HttpStatus.NOT_FOUND
-                        ))
+                        )),
+                getObjectGetUrl(eventId)
         );
     }
 
-    public List<EventsGetResponse> getEvents() {
+    public List<EventGetResponse> getEvents() {
         return eventRepository
                 .findAll()
                 .stream()
-                .map(eventMapper::toEventsGetResponse)
+                .map(event ->
+                        eventMapper.toEventGetResponse(event, getObjectGetUrl(event.getId()))
+                )
                 .toList();
+    }
+
+    public Page<EventGetResponse> getEventsPage(
+            int page,
+            int size,
+            EventFilter eventFilter
+    ) {
+        return eventRepository
+                .findAll(
+                        EventSpecification.filterEvents(eventFilter),
+                        PageRequest.of(page, size)
+                )
+                .map(event ->
+                        eventMapper.toEventGetResponse(event, getObjectGetUrl(event.getId()))
+                );
     }
 
     public String getObjectGetUrl(
@@ -195,21 +205,5 @@ public class EventService {
                 objectName,
                 method
         );
-    }
-
-    public Page<EventsGetResponse> getEventsPage(
-            int page,
-            int size,
-            EventFilter eventFilter
-    ) {
-        return eventRepository
-                .findAll(
-                        EventSpecification.filterEvents(eventFilter),
-                        PageRequest.of(
-                                page,
-                                size
-                        )
-                )
-                .map(eventMapper::toEventsGetResponse);
     }
 }

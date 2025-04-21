@@ -3,8 +3,11 @@ package com.pareto.activities.controller;
 import com.pareto.activities.dto.UserCreateRequest;
 import com.pareto.activities.dto.UserResponse;
 import com.pareto.activities.service.UserService;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@Validated
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
@@ -40,14 +44,14 @@ public class UserController {
 
     @GetMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
-    public UserResponse getUserByUsername(@PathVariable String username) {
+    public UserResponse getUserByUsername(@NotNull @Min(1) @PathVariable String username) {
         return userServise.getUserByUsername(username);
     }
 
     @PutMapping("/{username}")
     @ResponseStatus(HttpStatus.OK)
     public UserResponse updateUser(
-            @PathVariable String username,
+            @NotNull @Min(1) @PathVariable String username,
             @RequestBody UserCreateRequest user
     ) {
         return userServise.updateUser(
