@@ -1,13 +1,13 @@
 package com.pareto.activities.service;
 
-import com.pareto.activities.config.Constants;
 import com.pareto.activities.dto.EvReqResponse;
 import com.pareto.activities.entity.EventEntity;
 import com.pareto.activities.entity.EventRequestEntity;
+import com.pareto.activities.entity.UserEntity;
 import com.pareto.activities.enums.BusinessStatus;
 import com.pareto.activities.enums.ERequestStatus;
 import com.pareto.activities.exception.BusinessException;
-import com.pareto.activities.mapper.EventRequestMapper;
+import com.pareto.activities.mapper.manual.EventRequestMapper;
 import com.pareto.activities.repository.EventRepository;
 import com.pareto.activities.repository.EventRequestRepository;
 import com.pareto.activities.repository.UserRepository;
@@ -17,14 +17,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Service
 public class EventRequestService {
     private final EventRequestRepository eventRequestRepository;
-    private final EventRequestMapper EventRequestMapper;
+    private final EventRequestMapper eventRequestMapper;
     private final EventRepository eventRepository;
     private final UserRepository userRepository;
 
@@ -32,7 +32,7 @@ public class EventRequestService {
 
         return eventRequestRepository
                 .findById(eventId)
-                .map(EventRequestMapper::toEvReqResponse)
+                .map(eventRequestMapper::toEvReqResponse)
                 .orElseThrow(
                         () -> new BusinessException(
                                 BusinessStatus.EVENTREQUEST_NOT_FOUND,
@@ -46,25 +46,27 @@ public class EventRequestService {
     ) {
         return eventRequestRepository
                 .findAll(
-                        PageRequest.of(
-                                page,
-                                size
-                        )
+                        PageRequest.of(page, size)
                 )
-                .map(EventRequestMapper::toEvReqResponse);
+                .map(eventRequestMapper::toEvReqResponse);
+    }
+
+    //this is named like this for future work (when event gets updated).
+    @Transactional
+    public void createOrUpdatePendingRequest(EventEntity event, UserEntity user, LocalDateTime createdAt) {
+        EventRequestEntity request = new EventRequestEntity();
+        request.addEvent(event);
+        request.addUser(user);
+        request.setStatus(ERequestStatus.PENDING);
+        request.setRequestDate(createdAt);
+
+        eventRequestRepository.save(request);
     }
 
 
     public EvReqResponse requestParticipation(
-            Long eventId
-    ) {
-
-        String userIdString = ((ServletRequestAttributes) RequestContextHolder
-                        .getRequestAttributes())
-                        .getRequest()
-                        .getHeader(Constants.USER_HEADER);
-
-        Long userId = Long.valueOf(userIdString);
+            Long eventId,
+            Long userId) {
 
         EventEntity event = eventRepository
                 .findById(eventId)
@@ -88,7 +90,7 @@ public class EventRequestService {
 
         eventRequestRepository.save(eventRequestEntity);
 
-        return EventRequestMapper.toEvReqResponse(
+        return eventRequestMapper.toEvReqResponse(
                 eventRequestRepository.save(eventRequestEntity)
         );
     }
@@ -106,7 +108,7 @@ public class EventRequestService {
 
         event.setStatus(ERequestStatus.DECLINED);
 
-        return EventRequestMapper.toEvReqResponse(event);
+        return eventRequestMapper.toEvReqResponse(event);
     }
 
     @Transactional
@@ -122,6 +124,6 @@ public class EventRequestService {
 
         event.setStatus(ERequestStatus.APPROVED);
 
-        return EventRequestMapper.toEvReqResponse(event);
+        return eventRequestMapper.toEvReqResponse(event);
     }
 }

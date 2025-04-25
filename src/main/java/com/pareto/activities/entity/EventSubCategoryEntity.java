@@ -38,4 +38,14 @@ public class EventSubCategoryEntity {
 
     @OneToMany(mappedBy = "subCategory")
     private List<EventEntity> events;
+
+    public void addEvent(EventEntity event) {
+        events.add(event);
+        event.setSubCategory(this);
+    }
+
+    public void removeEvent(EventEntity event) {
+        events.remove(event);
+        event.setSubCategory(null);
+    }
 }

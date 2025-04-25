@@ -30,6 +30,7 @@ public class UserService {
                 .username(user.getUsername())
                 .password(user.getPassword())
                 .role(user.getRole())
+                .isActive(true)
                 .build()
                 ;
 

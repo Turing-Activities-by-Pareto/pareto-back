@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCreateRequest {
+    //implement validations here
     private String username;
     private String password;
     private EParticipantCategory role;

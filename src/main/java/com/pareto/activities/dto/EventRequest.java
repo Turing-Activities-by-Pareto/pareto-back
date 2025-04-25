@@ -1,6 +1,5 @@
 package com.pareto.activities.dto;
 
-import com.pareto.activities.enums.EParticipantCategory;
 import com.pareto.activities.validators.annotation.Category;
 import com.pareto.activities.validators.annotation.CategoryValidator;
 import com.pareto.activities.validators.annotation.SubCategory;
@@ -33,10 +32,14 @@ public class EventRequest {
     @SubCategory
     private String subCategory;
 
-    @NotEmpty
-    private String place;
+    @NotNull
+    private Boolean isLocal;
 
-    private Set<EParticipantCategory> participantCategories;
+    @NotEmpty
+    private String location;
+
+    @NotEmpty
+    private Set<String> participantCategories;
 
     @NotNull
     private LocalDateTime deadline;
@@ -46,6 +49,12 @@ public class EventRequest {
 
     @NotNull
     private LocalDateTime endDate;
+
+    @NotNull
+    private Boolean unlimitedSeats;
+
+    @NotNull
+    private Integer totalSeats;
 
     @NotEmpty
     private String fileExtension;

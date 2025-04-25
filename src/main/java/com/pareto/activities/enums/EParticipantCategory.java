@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
+//will be named as 'role'
 public enum EParticipantCategory {
     STUDENT,
     TEACHER,
